@@ -8,34 +8,14 @@ on:
       - "src/**"
 
 jobs:
-  setup:
+  lint-and-type-check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: setup bun
         uses: oven-sh/setup-bun@v1
-      - name: Intall dependencies
-        run: bun install
-
-  lint:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: setup bun
-        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
       - name: Lint
-        run: bun lint
-
-  type-check:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: setup bun
-        uses: oven-sh/setup-bun@v1
-      - name: Type-check
-        run: bun type-check
+        run: bun lint && bun type:check
