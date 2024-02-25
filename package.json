@@ -9,7 +9,9 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "biome lint ./src",
+    "format": "biome format ./src --write",
+    "check": "biome check --apply ./src",
     "start": "next start",
     "type:check": "tsc"
   },
@@ -31,6 +33,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.5.3",
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.11.20",
     "@types/react": "^18.2.57",
