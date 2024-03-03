@@ -11,6 +11,7 @@ help:
 	@echo 'logs                 -- コンテナのログを表示します'
 	@echo 'exec                 -- コンテナに入ります'
 	@echo 'db                   -- DBに接続します'
+	@echo 'dev                  -- ローカルサーバーを起動します'
 	@echo 'db-push 							-- DBにPrismaの変更を反映させます'
 	@echo 'db-studio 					  -- Prisma Studioを起動します'
 	@echo 'check 							  -- formatとlintを実施します'
@@ -44,6 +45,8 @@ exec:
 	docker-compose exec mysql sh
 db:
 	docker-compose exec mysql sh && mysql -uuser -ppassword
+dev:
+	bun dev
 db-push:
 	bun run db:push
 db-studio:
