@@ -14,16 +14,40 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
+model Status {
     id        Int      @id @default(autoincrement())
-    name      String
+    title      String
+    displayOrder Int
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+    deletedAt DateTime?
 
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
 
-    @@index([name])
+    task      Task[]
+
+    @@index([title])
+}
+
+model Task {
+    id        Int      @id @default(autoincrement())
+    title      String
+    thumbnail  String?
+    content   String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    deletedAt DateTime?
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    status     Status? @relation(fields: [statusId], references: [id])
+    statusId  Int?
+
+    @@index([title])
 }
 
 // Necessary for Next auth
@@ -61,7 +85,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    tasks         Task[]
+    statuses      Status[]
 }
 
 model VerificationToken {

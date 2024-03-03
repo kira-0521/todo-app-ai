@@ -1,24 +1,21 @@
-import { Anchor, Container, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Container, Stack, Text } from "@mantine/core";
 import { unstable_noStore as noStore } from "next/cache";
-import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
+import Link from "next/link";
+import { CreateStatus } from "./_components/create-status";
+import { CreateTask } from "./_components/create-task";
+
 export default async function Home() {
 	noStore();
-	const hello = await api.post.hello.query({ text: "from tRPC" });
 	const session = await getServerAuthSession();
 
 	return (
 		<main>
 			<Container>
 				<Stack>
-					<Title order={1}>
-						{hello ? hello.greeting : "Loading tRPC query..."}
-					</Title>
-
 					<Container>
 						<Text>
 							{session && <span>Logged in as {session.user?.name}</span>}
@@ -42,17 +39,18 @@ async function CrudShowcase() {
 	const session = await getServerAuthSession();
 	if (!session?.user) return null;
 
-	const latestPost = await api.post.getLatest.query();
+	const latestPost = await api.task.getLatest.query();
 
 	return (
 		<div>
 			{latestPost ? (
-				<p>Your most recent post: {latestPost.name}</p>
+				<p>Your most recent post: {latestPost.title}</p>
 			) : (
 				<p>You have no posts yet.</p>
 			)}
 
-			<CreatePost />
+			<CreateStatus />
+			<CreateTask />
 		</div>
 	);
 }
