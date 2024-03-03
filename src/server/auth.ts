@@ -5,7 +5,7 @@ import {
 	getServerSession,
 } from "next-auth";
 import type { Adapter } from "next-auth/adapters";
-import GithubProvider from "next-auth/providers/github";
+import Auth0Provider from "next-auth/providers/auth0";
 
 import { env } from "~/env";
 import { db } from "~/server/db";
@@ -48,9 +48,10 @@ export const authOptions: NextAuthOptions = {
 	},
 	adapter: PrismaAdapter(db) as Adapter,
 	providers: [
-		GithubProvider({
-			clientId: env.GITHUB_CLIENT_ID,
-			clientSecret: env.GITHUB_CLIENT_SECRET,
+		Auth0Provider({
+			clientId: env.AUTH0_CLIENT_ID,
+			clientSecret: env.AUTH0_CLIENT_SECRET,
+			issuer: env.AUTH0_ISSUER,
 		}),
 		/**
 		 * ...add more providers here.
