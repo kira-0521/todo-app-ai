@@ -54,7 +54,7 @@ db-studio:
 check:
 	bun run check
 type-check:
-	bun run type-check
+	bun run type:check
 e-ls:
 	vercel env ls
 e-add:
