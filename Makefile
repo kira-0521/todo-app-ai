@@ -55,15 +55,21 @@ exec:
 
 # データベース関連のコマンド
 db:
-	docker-compose exec mysql sh && mysql -uuser -ppassword
+	docker compose exec mysql sh
 db-push:
 	bun run db:push
 db-studio:
 	bun run db:studio
 db-format:
-	npx prisma format
+	bunx prisma format
 db-validate:
-	npx prisma validate
+	bunx prisma validate
+db-seed:
+	bunx prisma db seed
+db-status:
+	bunx prisma migrate status
+db-fresh:
+	bunx prisma migrate reset --skip-generate --skip-seed && make db-push
 
 # 開発ツール関連のコマンド
 dev:
