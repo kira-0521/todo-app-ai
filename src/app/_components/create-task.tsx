@@ -9,37 +9,39 @@ import { z } from "zod";
 import { api } from "~/trpc/react";
 
 const schema = z.object({
-	name: z.string().min(2, { message: "Name should have at least 2 letters" }),
+	title: z.string().min(2, { message: "Name should have at least 2 letters" }),
 });
 
-export function CreatePost() {
+export function CreateTask() {
 	const router = useRouter();
 	const form = useForm({
 		initialValues: {
-			name: "",
+			title: "",
 		},
 		validate: zodResolver(schema),
 	});
 
-	const createPost = api.post.create.useMutation({
+	const createTask = api.task.create.useMutation({
 		onSuccess: () => {
 			router.refresh();
 		},
 	});
 
+	const STATUS_ID_TEMP = 1;
+
 	return (
 		<form
 			onSubmit={form.onSubmit((values) =>
-				createPost.mutate({ name: values.name }),
+				createTask.mutate({ title: values.title, statusId: STATUS_ID_TEMP }),
 			)}
 		>
 			<TextInput
 				type="text"
 				placeholder="Title"
-				{...form.getInputProps("name")}
+				{...form.getInputProps("title")}
 			/>
-			<Button type="submit" disabled={createPost.isLoading}>
-				{createPost.isLoading ? "Submitting..." : "Submit"}
+			<Button type="submit" disabled={createTask.isLoading}>
+				{createTask.isLoading ? "Submitting..." : "Submit"}
 			</Button>
 		</form>
 	);

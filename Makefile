@@ -1,4 +1,5 @@
 help:
+	@echo '--- コンテナ関連 ---'
 	@echo 'ps                   -- コンテナ一覧を表示します'
 	@echo 'up                   -- コンテナを起動します'
 	@echo 'down                 -- コンテナを停止します'
@@ -10,16 +11,24 @@ help:
 	@echo 'status               -- コンテナの状態を表示します'
 	@echo 'logs                 -- コンテナのログを表示します'
 	@echo 'exec                 -- コンテナに入ります'
+	@echo ''
+
+	@echo '--- DB関連 ---'
 	@echo 'db                   -- DBに接続します'
+	@echo 'db-push              -- DBにPrismaの変更を反映させます'
+	@echo 'db-studio            -- Prisma Studioを起動します'
+	@echo 'db-format            -- Prismaのフォーマットを実施します'
+	@echo 'db-validate          -- Prismaのバリデーションを実施します'
+	@echo ''
+
+	@echo '--- 開発環境関連 ---'
 	@echo 'dev                  -- ローカルサーバーを起動します'
-	@echo 'db-push 							-- DBにPrismaの変更を反映させます'
-	@echo 'db-studio 					  -- Prisma Studioを起動します'
-	@echo 'check 							  -- formatとlintを実施します'
-	@echo 'type-check 					-- 型チェックを実施します'
-	@echo 'e-ls 								-- vercelのenv一覧を表示します'
-	@echo 'e-add 								-- vercelのenvを追加します'
-	@echo 'e-rm 								-- vercelのenvを削除します'
-	@echo 'e-pull 							-- vercelのenvを取得します'
+	@echo 'check                -- formatとlintを実施します'
+	@echo 'type-check           -- 型チェックを実施します'
+	@echo 'e-ls                 -- vercelのenv一覧を表示します'
+	@echo 'e-add                -- vercelのenvを追加します'
+	@echo 'e-rm                 -- vercelのenvを削除します'
+	@echo 'e-pull               -- vercelのenvを取得します'
 
 ps:
 	docker-compose ps
@@ -43,18 +52,28 @@ logs:
 	docker-compose logs -f
 exec:
 	docker-compose exec mysql sh
+
+# データベース関連のコマンド
 db:
 	docker-compose exec mysql sh && mysql -uuser -ppassword
-dev:
-	bun dev
 db-push:
 	bun run db:push
 db-studio:
 	bun run db:studio
+db-format:
+	npx prisma format
+db-validate:
+	npx prisma validate
+
+# 開発ツール関連のコマンド
+dev:
+	bun dev
 check:
 	bun run check
 type-check:
-	bun run type-check
+	bun run type:check
+
+# 環境変数関連のコマンド
 e-ls:
 	vercel env ls
 e-add:
