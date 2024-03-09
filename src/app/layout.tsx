@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { theme } from "~/theme";
 import { TRPCReactProvider } from "~/trpc/react";
 
 const inter = Inter({
@@ -27,7 +28,7 @@ export default function RootLayout({
 			</head>
 			<body className={inter.className}>
 				<TRPCReactProvider>
-					<MantineProvider>{children}</MantineProvider>
+					<MantineProvider theme={theme}>{children}</MantineProvider>
 				</TRPCReactProvider>
 			</body>
 		</html>
