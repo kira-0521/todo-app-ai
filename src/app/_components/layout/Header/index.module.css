@@ -1,3 +1,7 @@
+.header {
+  min-height: 70px;
+}
+
 .inner {
   padding: var(--mantine-spacing-md);
 }
