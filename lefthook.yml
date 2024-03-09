@@ -1,5 +1,6 @@
 pre-commit:
+  parallel: true
   commands:
     check:
       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}"
-      run: bun check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && make db-format
+      run: bun check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && make db-format && git add {staged_files}
