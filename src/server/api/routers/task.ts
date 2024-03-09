@@ -15,6 +15,16 @@ export const taskRouter = createTRPCRouter({
 			});
 		}),
 
+	getAll: protectedProcedure
+		.input(z.object({ statusId: z.number() }))
+		.query(async ({ ctx, input }) => {
+			// TODO: 削除
+			await new Promise((resolve) => setTimeout(resolve, 3000));
+			return await ctx.db.task.findMany({
+				where: { statusId: input.statusId },
+			});
+		}),
+
 	getLatest: protectedProcedure.query(({ ctx }) => {
 		return ctx.db.task.findFirst({
 			orderBy: { createdAt: "desc" },
