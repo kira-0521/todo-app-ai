@@ -7,7 +7,7 @@ import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { getServerAuthSession } from "~/server/auth";
 import { theme } from "~/theme";
 import { TRPCReactProvider } from "~/trpc/react";
-import { Header } from "./_components/layout";
+import { Header } from "./_components/";
 
 const inter = Inter({
 	subsets: ["latin"],

@@ -1,45 +1,56 @@
-import { Container } from "@mantine/core";
+import { Container, Flex, Text } from "@mantine/core";
 
-import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
 import { Suspense } from "react";
-import { CreateStatus } from "./_components/create-status";
-import { CreateTask } from "./_components/create-task";
-import {
-	TaskList,
-	TaskListSkeleton,
-} from "./_features/task/components/task-list";
+
+import { DashBoardSkelton } from "./_components/skelton";
+import { TaskList } from "./_features/task/";
 
 export default function Home() {
 	return (
 		<main>
 			<Container>
-				<Suspense fallback={<TaskListSkeleton />}>
-					<TaskList />
+				<Suspense fallback={<DashBoardSkelton />}>
+					<Dashboard />
 				</Suspense>
-				<CrudShowcase />
 			</Container>
 		</main>
 	);
 }
 
-async function CrudShowcase() {
-	const session = await getServerAuthSession();
-	if (!session?.user) return null;
+const NOT_EXISTENT_ID = 0;
+async function Dashboard() {
+	const statuses = await api.status.getAll.query();
+	const tasks = await api.task.getAll.query();
 
-	const latestPost = await api.task.getLatest.query();
+	const taskStatusMap = tasks.reduce<Record<number, (typeof tasks)[number][]>>(
+		(acc, task) => {
+			const statusId = task.statusId ?? NOT_EXISTENT_ID;
+			if (!acc[statusId]) {
+				acc[statusId] = [];
+			}
+			acc[statusId] = [...(acc[statusId] ?? []), task];
+			return acc;
+		},
+		{ [NOT_EXISTENT_ID]: [] },
+	);
+
+	tasks[Symbol.iterator] = function* () {
+		yield* this;
+	};
 
 	return (
-		<div>
-			{latestPost ? (
-				<p>Your most recent post: {latestPost.title}</p>
-			) : (
-				<p>You have no posts yet.</p>
-			)}
-
-			<CreateStatus />
-			<CreateTask />
-		</div>
+		<Flex gap={20}>
+			{statuses
+				.filter((s) => s.id !== NOT_EXISTENT_ID)
+				.sort((a, b) => a.displayOrder - b.displayOrder)
+				.map((status) => (
+					<Flex key={status.id} direction="column" miw={300}>
+						<Text>{status.title}</Text>
+						<TaskList taskList={taskStatusMap[status.id] ?? []} />
+					</Flex>
+				))}
+		</Flex>
 	);
 }
