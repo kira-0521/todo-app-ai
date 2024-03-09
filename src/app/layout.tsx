@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import { theme } from "~/theme";
 import { TRPCReactProvider } from "~/trpc/react";
+import { Header } from "./_components/layout";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -28,7 +29,10 @@ export default function RootLayout({
 			</head>
 			<body className={inter.className}>
 				<TRPCReactProvider>
-					<MantineProvider theme={theme}>{children}</MantineProvider>
+					<MantineProvider theme={theme}>
+						<Header avatar="" username="hoge" />
+						<main>{children}</main>
+					</MantineProvider>
 				</TRPCReactProvider>
 			</body>
 		</html>
