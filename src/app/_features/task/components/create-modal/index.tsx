@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { memo } from "react";
 
 import type { FC } from "react";
+import { CreateTask } from "..";
 
 type Props = {
 	isOpen: boolean;
@@ -24,7 +25,7 @@ export const CreateModal: FC<Props> = memo(({ isOpen }) => {
 				blur: 3,
 			}}
 		>
-			Modal
+			<CreateTask />
 		</Modal>
 	);
 });

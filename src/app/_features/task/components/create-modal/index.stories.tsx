@@ -8,4 +8,4 @@ const meta: Meta<typeof CreateModal> = {
 export default meta;
 type Story = StoryObj<typeof CreateModal>;
 
-export const Default: Story = { args: { children: "Hello, World!" } };
+export const Default: Story = {};

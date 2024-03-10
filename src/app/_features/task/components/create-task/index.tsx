@@ -1,48 +1,65 @@
 "use client";
 
-import { Button, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-
+import {
+	Button,
+	LoadingOverlay,
+	Select,
+	Stack,
+	TextInput,
+	Textarea,
+} from "@mantine/core";
+import { createTaskAction } from "~/server/actions";
 import { api } from "~/trpc/react";
 
-const schema = z.object({
-	title: z.string().min(2, { message: "Name should have at least 2 letters" }),
-});
-
 export function CreateTask() {
-	const router = useRouter();
-	const form = useForm({
-		initialValues: {
-			title: "",
-		},
-		validate: zodResolver(schema),
-	});
-
-	const createTask = api.task.create.useMutation({
-		onSuccess: () => {
-			router.refresh();
-		},
-	});
-
-	const STATUS_ID_TEMP = 1;
+	const { data: allStatus, isLoading } = api.status.getAll.useQuery();
 
 	return (
-		<form
-			onSubmit={form.onSubmit((values) =>
-				createTask.mutate({ title: values.title, statusId: STATUS_ID_TEMP }),
-			)}
-		>
-			<TextInput
-				type="text"
-				placeholder="Title"
-				{...form.getInputProps("title")}
-			/>
-			<Button type="submit" disabled={createTask.isLoading}>
-				{createTask.isLoading ? "Submitting..." : "Submit"}
-			</Button>
+		<form action={createTaskAction}>
+			<Stack pos="relative">
+				<LoadingOverlay
+					visible={isLoading}
+					loaderProps={{ children: "Loading..." }}
+				/>
+				<TextInput
+					id="title"
+					name="title"
+					size="md"
+					type="text"
+					label="Title"
+					placeholder="Task Title"
+					withAsterisk
+					description="Input your task title here."
+				/>
+				<Textarea
+					id="content"
+					name="content"
+					size="md"
+					label="Content"
+					placeholder="Task Content"
+					description="Input your task process, description, or anything else here."
+				/>
+				<Select
+					label="Status"
+					id="statusId"
+					name="statusId"
+					placeholder="Pick status"
+					description="Pick your task status here."
+					size="md"
+					withAsterisk
+					withCheckIcon
+					data={
+						allStatus
+							? allStatus.map((status) => ({
+									value: status.id.toString(),
+									label: status.title,
+							  }))
+							: []
+					}
+					searchable
+				/>
+				<Button type="submit">Submit</Button>
+			</Stack>
 		</form>
 	);
 }
