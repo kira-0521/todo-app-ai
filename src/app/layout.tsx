@@ -8,6 +8,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { theme } from "~/theme";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Header } from "./_components/";
+import { AddButton } from "./_features";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -34,12 +35,13 @@ export default async function RootLayout({
 			</head>
 			<body className={inter.className}>
 				<TRPCReactProvider>
-					<MantineProvider theme={theme}>
+					<MantineProvider theme={theme} defaultColorScheme="dark">
 						<Header
 							avatar={session?.user.image ?? undefined}
 							username={session?.user.name ?? ""}
 						/>
 						<main>{children}</main>
+						<AddButton />
 					</MantineProvider>
 				</TRPCReactProvider>
 			</body>

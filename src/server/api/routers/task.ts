@@ -16,8 +16,7 @@ export const taskRouter = createTRPCRouter({
 		}),
 
 	getAll: protectedProcedure.query(async ({ ctx }) => {
-		// TODO: 削除
-		await new Promise((resolve) => setTimeout(resolve, 3000));
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
 		return await ctx.db.task.findMany();
 	}),
 
