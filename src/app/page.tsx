@@ -1,4 +1,4 @@
-import { Container, Flex, Text } from "@mantine/core";
+import { Container, Flex, Title } from "@mantine/core";
 
 import { api } from "~/trpc/server";
 
@@ -47,7 +47,9 @@ async function Dashboard() {
 				.sort((a, b) => a.displayOrder - b.displayOrder)
 				.map((status) => (
 					<Flex key={status.id} direction="column" miw={300}>
-						<Text>{status.title}</Text>
+						<Title order={2} lineClamp={1}>
+							{status.title}
+						</Title>
 						<TaskList taskList={taskStatusMap[status.id] ?? []} />
 					</Flex>
 				))}
