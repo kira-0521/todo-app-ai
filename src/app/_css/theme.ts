@@ -1,5 +1,5 @@
 import { createTheme } from "@mantine/core";
-import classes from "./css/active.module.css";
+import classes from "./active.module.css";
 
 export const theme = createTheme({
 	autoContrast: true,
