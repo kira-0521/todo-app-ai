@@ -8,7 +8,7 @@ questions:
   component: 'Please enter component name.'
 ---
 
-# `{{ inputs.feature | kebab }}/components/{{ inputs.component | kebab }}/index.tsx`
+# `{{ inputs.feature | pascal }}/components/{{ inputs.component | pascal }}/index.tsx`
 
 ```tsx
 import { memo } from 'react';
@@ -24,7 +24,7 @@ export const {{ inputs.component | pascal }}: FC<Props> = memo(({ children }) =>
 });
 ```
 
-# `{{ inputs.feature | kebab }}/components/{{ inputs.component | kebab }}/index.stories.tsx`
+# `{{ inputs.feature | pascal }}/components/{{ inputs.component | pascal }}/index.stories.tsx`
 
 ```tsx
 import type { Meta, StoryObj } from '@storybook/react';
@@ -37,5 +37,5 @@ const meta: Meta<typeof {{ inputs.component | pascal }}> = {
 export default meta;
 type Story = StoryObj<typeof {{ inputs.component | pascal }}>;
 
-export const Default: Story = { args: { children: 'Hello, World!' }};
+export const Default: Story = {};
 ```
