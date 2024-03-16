@@ -1,13 +1,16 @@
 import "@mantine/core/styles.css";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import { unstable_noStore as noStore } from "next/cache";
 import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { theme } from "~/app/_css/theme";
 import { getServerAuthSession } from "~/server/auth";
-import { theme } from "~/theme";
 import { TRPCReactProvider } from "~/trpc/react";
-import { Header } from "./_components/layout";
+import { Header } from "./_components/";
+import { AddButtonFixed } from "./_features";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -34,12 +37,14 @@ export default async function RootLayout({
 			</head>
 			<body className={inter.className}>
 				<TRPCReactProvider>
-					<MantineProvider theme={theme}>
+					<MantineProvider theme={theme} defaultColorScheme="dark">
+						<Notifications />
 						<Header
 							avatar={session?.user.image ?? undefined}
 							username={session?.user.name ?? ""}
 						/>
 						<main>{children}</main>
+						<AddButtonFixed />
 					</MantineProvider>
 				</TRPCReactProvider>
 			</body>

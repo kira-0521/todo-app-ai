@@ -19,7 +19,9 @@ help:
 	@echo 'db-studio            -- Prisma Studioを起動します'
 	@echo 'db-format            -- Prismaのフォーマットを実施します'
 	@echo 'db-validate          -- Prismaのバリデーションを実施します'
-	@echo ''
+	@echo 'db-seed              -- Prismaのseedを実施します'
+	@echo 'db-status            -- Prismaのstatusを表示します'
+	@echo 'db-fresh             -- Prismaのデータをリセットします'
 
 	@echo '--- 開発環境関連 ---'
 	@echo 'dev                  -- ローカルサーバーを起動します'
@@ -29,6 +31,8 @@ help:
 	@echo 'e-add                -- vercelのenvを追加します'
 	@echo 'e-rm                 -- vercelのenvを削除します'
 	@echo 'e-pull               -- vercelのenvを取得します'
+	@echo 'storybook            -- storybookを起動します'
+	@echo 'scaffold              -- ファイルを生成します'
 
 ps:
 	docker-compose ps
@@ -78,6 +82,10 @@ check:
 	bun run check
 type-check:
 	bun run type:check
+storybook:
+	bun run storybook
+scaffold:
+	bun run scaffold
 
 # 環境変数関連のコマンド
 e-ls:

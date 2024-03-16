@@ -15,6 +15,11 @@ export const statusRouter = createTRPCRouter({
 			});
 		}),
 
+	getAll: protectedProcedure.query(async ({ ctx }) => {
+		// await new Promise((resolve) => setTimeout(resolve, 3000));
+		return await ctx.db.status.findMany();
+	}),
+
 	getLatest: protectedProcedure.query(({ ctx }) => {
 		return ctx.db.status.findFirst({
 			orderBy: { createdAt: "desc" },

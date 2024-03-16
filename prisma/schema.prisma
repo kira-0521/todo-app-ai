@@ -19,7 +19,7 @@ datasource db {
 
 model Status {
   id           Int    @id @default(autoincrement())
-  title        String
+  title        String @db.VarChar(255)
   displayOrder Int
 
   createdAt DateTime  @default(now())
@@ -37,9 +37,9 @@ model Status {
 
 model Task {
   id        Int     @id @default(autoincrement())
-  title     String
-  thumbnail String?
-  content   String?
+  title     String  @db.VarChar(255)
+  thumbnail String? @db.Text
+  content   String? @db.Text
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
