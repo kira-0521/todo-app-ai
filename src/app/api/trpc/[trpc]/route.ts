@@ -1,4 +1,5 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
+import {} from "@trpc/server/adapters/node-http/content-type/form-data";
 import type { NextRequest } from "next/server";
 
 import { env } from "~/env";

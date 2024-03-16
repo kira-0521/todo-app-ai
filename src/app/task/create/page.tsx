@@ -1,16 +1,16 @@
 import { Container } from "@mantine/core";
 
 import { Suspense } from "react";
+import { DashBoardSkelton } from "../../_components/skelton";
 
-import { DashBoardSkelton } from "./_components/skelton";
-import { Dashboard } from "./task/_components/Dashboard";
+import { Dashboard } from "../_components";
 
-export default function Home() {
+export default function CreateTaskPage() {
 	return (
 		<main>
 			<Container>
 				<Suspense fallback={<DashBoardSkelton />}>
-					<Dashboard isOpenModal={false} />
+					<Dashboard isOpenModal createType="manual" />
 				</Suspense>
 			</Container>
 		</main>

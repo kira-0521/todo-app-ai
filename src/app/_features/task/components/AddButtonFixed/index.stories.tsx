@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { CreateTask } from ".";
+import { AddButtonFixed } from ".";
 
-const meta: Meta<typeof CreateTask> = {
-	component: CreateTask,
+const meta: Meta<typeof AddButtonFixed> = {
+	component: AddButtonFixed,
 };
 export default meta;
-type Story = StoryObj<typeof CreateTask>;
+type Story = StoryObj<typeof AddButtonFixed>;
 
 export const Default: Story = { args: { children: "Hello, World!" } };

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
+import { checkExistId as checkExistStatusId } from "~/server/useCases";
 import { createTaskSchema } from "./schema";
 
 export const createTaskAction = async (formData: FormData) => {
@@ -21,10 +22,8 @@ export const createTaskAction = async (formData: FormData) => {
 		throw new Error(validatedData.error.issues[0]?.message);
 	}
 
-	const statusIds = (await db.status.findMany()).map((status) => status.id);
-	if (!statusIds.includes(validatedData.data.statusId)) {
-		throw new Error("Invalid statusId");
-	}
+	const isExist = await checkExistStatusId(validatedData.data.statusId);
+	if (!isExist) throw new Error("Invalid statusId");
 
 	const session = await getServerAuthSession();
 	if (!session) {

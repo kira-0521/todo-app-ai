@@ -5,7 +5,7 @@ import type { Preview } from "@storybook/react";
 
 import React from "react";
 import { DARK_MODE_EVENT_NAME } from "storybook-dark-mode";
-import { theme } from "../src/theme";
+import { theme } from "../_css/theme";
 
 const channel = addons.getChannel();
 

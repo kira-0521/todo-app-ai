@@ -17,5 +17,15 @@ const config: StorybookConfig = {
 	docs: {
 		autodocs: "tag",
 	},
+	webpack(baseConfig) {
+		baseConfig.resolve = {
+			...(baseConfig.resolve ?? {}),
+			alias: {
+				...(baseConfig.resolve?.alias ?? {}),
+				"@opentelemetry/api": "next/dist/compiled/@opentelemetry/api",
+			},
+		};
+		return baseConfig;
+	},
 };
 export default config;

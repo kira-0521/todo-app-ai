@@ -2,12 +2,17 @@ import { Flex, Title } from "@mantine/core";
 
 import type { FC } from "react";
 import { api } from "~/trpc/server";
-import { CreateModal, TaskList } from "./_features";
+import { CreateModal, TaskList } from "../../_features";
 
-type Props = { isOpenModal: boolean };
+type Props =
+	| { isOpenModal: true; createType: "manual" | "ai" }
+	| {
+			isOpenModal: false;
+			createType?: never;
+	  };
 
 const NOT_EXISTENT_ID = 0;
-export const Dashboard: FC<Props> = async ({ isOpenModal }) => {
+export const Dashboard: FC<Props> = async ({ isOpenModal, createType }) => {
 	const statuses = await api.status.getAll.query();
 	const tasks = await api.task.getAll.query();
 
@@ -42,7 +47,7 @@ export const Dashboard: FC<Props> = async ({ isOpenModal }) => {
 						</Flex>
 					))}
 			</Flex>
-			<CreateModal isOpen={isOpenModal} />
+			<CreateModal isOpen={isOpenModal} createType={createType ?? "manual"} />
 		</>
 	);
 };

@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { Form } from ".";
 
-import { AddButton } from ".";
-
-const meta: Meta<typeof AddButton> = {
-	component: AddButton,
+const meta: Meta<typeof Form> = {
+	component: Form,
 };
 export default meta;
-type Story = StoryObj<typeof AddButton>;
+type Story = StoryObj<typeof Form>;
 
 export const Default: Story = { args: { children: "Hello, World!" } };
