@@ -15,7 +15,7 @@ export const Form: FC<Props> = memo(({ children, form, isLoadingOverlay }) => {
 			<Stack pos="relative">
 				<LoadingOverlay
 					visible={isLoadingOverlay ?? false}
-					loaderProps={{ children: <Loader /> }}
+					loaderProps={{ children: <Loader color="gray" /> }}
 				/>
 				{children}
 				<Button type="submit">Submit</Button>
