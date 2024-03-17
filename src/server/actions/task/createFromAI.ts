@@ -1,54 +1,75 @@
 "use server";
 
-import { generateTask } from "~/ai/generateTask";
+import { generateTask as generateTasks } from "~/ai/generateTask";
 import { fileToBase64 } from "~/ai/util";
-import { getServerAuthSession } from "~/server/auth";
-import { checkExistStatusId } from "~/server/domainService";
-import { createStatusRepository } from "~/server/repository";
+import {
+	createStatusRepository,
+	createTaskRepository,
+} from "~/server/repository";
+import { createTaskService } from "~/server/service";
 import { createTaskAiSchema } from "./schema";
 
 const statusRepository = createStatusRepository();
+const taskRepository = createTaskRepository();
 
-export const createTaskFromAIAction = async (formData: FormData) => {
+export type CreateTaskFromAIState =
+	| {
+			status: "success";
+			message: string;
+			length: number;
+	  }
+	| {
+			status: "error";
+			message: string;
+			length?: never;
+	  };
+
+export const createTaskFromAIAction = async (
+	_: CreateTaskFromAIState,
+	formData: FormData,
+) => {
 	const entries = Object.fromEntries(formData);
-
-	if (typeof entries.statusId !== "string")
-		throw new Error(`Invalid statusId: ${entries.statusId}`);
 	const validatedData = createTaskAiSchema.safeParse(entries);
-
 	if (!validatedData.success) {
-		throw new Error(JSON.stringify(validatedData.error.issues[0]));
+		return {
+			status: "error",
+			message: JSON.stringify(validatedData.error.issues[0]),
+		} satisfies CreateTaskFromAIState;
 	}
-
-	const parsedStatusId = Number.parseInt(entries.statusId, 10);
-	const isExistStatus = await checkExistStatusId(
-		statusRepository,
-		parsedStatusId,
-	);
-	if (!isExistStatus) throw new Error("Invalid statusId");
 
 	const { thumbnail } = validatedData.data;
-
-	const session = await getServerAuthSession();
-	if (!session) {
-		throw new Error("Unauthorized");
-	}
-
-	if (!thumbnail) throw new Error("Invalid image");
 	const base64String = await fileToBase64(thumbnail);
 
-	const res = await generateTask({
-		image: {
-			// TODO: mimetype取得
-			mime_type: "image/png",
-			data: base64String,
-		},
-	});
-	const resObj = res[0];
-	if (!resObj || !resObj.text) throw new Error("Invalid response");
-	console.log(JSON.parse(resObj.text));
-
-	console.log(
-		"========================== called: end createTaskAction ==========================",
-	);
+	try {
+		const generatedTasks = await generateTasks({
+			image: {
+				// TODO: mimetype取得
+				mime_type: "image/png",
+				data: base64String,
+			},
+		});
+		const result = await Promise.all(
+			generatedTasks.columns.map((column) =>
+				createTaskService(taskRepository, statusRepository, {
+					title: column.title,
+					content: column.content,
+					statusId: 1,
+				}),
+			),
+		);
+		return {
+			status: "success",
+			message: "Success to generate task",
+			length: result.length,
+		} satisfies CreateTaskFromAIState;
+	} catch (error) {
+		console.error(
+			"\n========================== error ==========================",
+			error,
+		);
+		return {
+			status: "error",
+			message: `Failed to generate task: ${error}`,
+		} satisfies CreateTaskFromAIState;
+	}
 };

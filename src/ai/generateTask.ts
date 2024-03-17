@@ -5,11 +5,19 @@ import type {
 import { generativeModel } from "./init";
 import { generatePrompt } from "./prompt/prompt";
 
+type Column = {
+	title: string;
+	content: string;
+};
+export type GenerateTaskResponse = {
+	columns: Column[];
+};
+
 export const generateTask = async ({
 	image,
 }: {
 	image: GenerativeContentBlob;
-}) => {
+}): Promise<GenerateTaskResponse> => {
 	const req: GenerateContentRequest = {
 		contents: [
 			{
@@ -37,5 +45,18 @@ export const generateTask = async ({
 	const {
 		content: { parts },
 	} = content;
-	return parts;
+	const part = parts[0];
+	if (!part || !part.text) throw new Error("Invalid part");
+	console.log(
+		"========================== part ==========================",
+		part,
+	);
+	console.log(
+		"========================== part.text ==========================",
+		part.text,
+	);
+	const columns = JSON.parse(
+		part.text.replace("```json```", ""),
+	) as GenerateTaskResponse;
+	return columns;
 };
