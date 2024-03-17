@@ -1,3 +1,5 @@
+"use client";
+
 import { TextInput } from "@mantine/core";
 import { memo } from "react";
 

@@ -1,37 +1,75 @@
 "use server";
 
-import { getServerAuthSession } from "~/server/auth";
-import { checkExistId as checkExistStatusId } from "~/server/useCases";
+import { generateTask as generateTasks } from "~/ai/generateTask";
+import { fileToBase64 } from "~/ai/util";
+import {
+	createStatusRepository,
+	createTaskRepository,
+} from "~/server/repository";
+import { createTaskService } from "~/server/service";
 import { createTaskAiSchema } from "./schema";
 
-export const createTaskFromAIAction = async (formData: FormData) => {
-	console.log(
-		"========================== called: createTaskAction ==========================",
-	);
+const statusRepository = createStatusRepository();
+const taskRepository = createTaskRepository();
+
+export type CreateTaskFromAIState =
+	| {
+			status: "success";
+			message: string;
+			length: number;
+	  }
+	| {
+			status: "error";
+			message: string;
+			length?: never;
+	  };
+
+export const createTaskFromAIAction = async (
+	_: CreateTaskFromAIState,
+	formData: FormData,
+) => {
 	const entries = Object.fromEntries(formData);
-	console.log(
-		"========================== formData ==========================",
-		entries,
-	);
 	const validatedData = createTaskAiSchema.safeParse(entries);
-
 	if (!validatedData.success) {
-		throw new Error(JSON.stringify(validatedData.error.issues[0]));
+		return {
+			status: "error",
+			message: JSON.stringify(validatedData.error.issues[0]),
+		} satisfies CreateTaskFromAIState;
 	}
 
-	const { statusId } = validatedData.data;
+	const { thumbnail } = validatedData.data;
+	const base64String = await fileToBase64(thumbnail);
 
-	const parsedStatusId = Number.parseInt(statusId, 10);
-	const isExistStatus = await checkExistStatusId(parsedStatusId);
-	if (!isExistStatus) throw new Error("Invalid statusId");
-
-	const session = await getServerAuthSession();
-	if (!session) {
-		throw new Error("Unauthorized");
+	try {
+		const generatedTasks = await generateTasks({
+			image: {
+				// TODO: mimetype取得
+				mime_type: "image/png",
+				data: base64String,
+			},
+		});
+		const result = await Promise.all(
+			generatedTasks.columns.map((column) =>
+				createTaskService(taskRepository, statusRepository, {
+					title: column.title,
+					content: column.content,
+					statusId: 1,
+				}),
+			),
+		);
+		return {
+			status: "success",
+			message: "Success to generate task",
+			length: result.length,
+		} satisfies CreateTaskFromAIState;
+	} catch (error) {
+		console.error(
+			"\n========================== error ==========================",
+			error,
+		);
+		return {
+			status: "error",
+			message: `Failed to generate task: ${error}`,
+		} satisfies CreateTaskFromAIState;
 	}
-
-	console.log(
-		"========================== called: end createTaskAction ==========================",
-		validatedData.data,
-	);
 };

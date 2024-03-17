@@ -1,4 +1,3 @@
-import type { FileWithPath } from "@mantine/dropzone";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -12,15 +11,9 @@ export const createTaskSchema = z.object({
 	thumbnail: z.string().trim().optional(),
 	statusId: z.number().min(1, { message: "statusId is larger than 0" }),
 }) satisfies z.ZodType<Omit<Prisma.TaskCreateInput, "createdBy">>;
+export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
 
-export const createTaskAiSchema = createTaskSchema
-	.pick({
-		title: true,
-	})
-	.merge(
-		z.object({
-			statusId: z.string().trim(),
-			thumbnail: z.custom<FileWithPath[]>().transform((file) => file),
-		}),
-	);
+export const createTaskAiSchema = z.object({
+	thumbnail: z.custom<File>().transform((file) => file),
+});
 export type CreateTaskAiSchema = z.infer<typeof createTaskAiSchema>;

@@ -38,7 +38,7 @@ export default async function RootLayout({
 			<body className={inter.className}>
 				<TRPCReactProvider>
 					<MantineProvider theme={theme} defaultColorScheme="dark">
-						<Notifications />
+						<Notifications position="top-right" />
 						<Header
 							avatar={session?.user.image ?? undefined}
 							username={session?.user.name ?? ""}
