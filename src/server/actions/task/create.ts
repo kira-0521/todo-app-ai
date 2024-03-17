@@ -2,15 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getServerAuthSession } from "~/server/auth";
-import { db } from "~/server/db";
-import { createStatusRepository } from "~/server/repository";
-import { checkExistId as checkExistStatusId } from "~/server/service";
-import { createTaskSchema } from "./schema";
+import {
+	createStatusRepository,
+	createTaskRepository,
+} from "~/server/repository";
+import { createTaskService } from "~/server/service/task/createTask";
+import { createTaskSchema } from ".";
 
 const statusRepository = createStatusRepository();
+const taskRepository = createTaskRepository();
 
-export const createTaskAction = async (formData: FormData) => {
+export type CreateTaskState = {
+	errorMessage: string;
+};
+
+export const createTaskAction = async (
+	state: CreateTaskState,
+	formData: FormData,
+) => {
 	const entries = Object.fromEntries(formData);
 
 	if (typeof entries.statusId !== "string")
@@ -22,32 +31,23 @@ export const createTaskAction = async (formData: FormData) => {
 	});
 
 	if (!validatedData.success) {
-		throw new Error(validatedData.error.issues[0]?.message);
-	}
-
-	const isExist = await checkExistStatusId(
-		statusRepository,
-		validatedData.data.statusId,
-	);
-	if (!isExist) throw new Error("Invalid statusId");
-
-	const session = await getServerAuthSession();
-	if (!session) {
-		throw new Error("Unauthorized");
+		return {
+			...state,
+			errorMessage: JSON.stringify(validatedData.error.issues[0]),
+		};
 	}
 
 	try {
-		await db.task.create({
-			data: {
-				title: validatedData.data.title,
-				content: validatedData.data.content,
-				status: { connect: { id: validatedData.data.statusId } },
-				createdBy: { connect: { id: session.user.id } },
-			},
-		});
+		await createTaskService(
+			taskRepository,
+			statusRepository,
+			validatedData.data,
+		);
 	} catch (error) {
-		console.error(error);
-		throw new Error("Failed to create task");
+		return {
+			...state,
+			errorMessage: `Failed to create task ${error}`,
+		};
 	}
 
 	revalidatePath("/");

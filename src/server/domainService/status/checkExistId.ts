@@ -1,7 +1,7 @@
 import type { Status } from "@prisma/client";
 import type { StatusRepositoryType } from "~/server/repository";
 
-export const checkExistId = async (
+export const checkExistStatusId = async (
 	repository: StatusRepositoryType,
 	id: Status["id"],
 ): Promise<boolean> => {

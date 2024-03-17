@@ -11,6 +11,7 @@ export const createTaskSchema = z.object({
 	thumbnail: z.string().trim().optional(),
 	statusId: z.number().min(1, { message: "statusId is larger than 0" }),
 }) satisfies z.ZodType<Omit<Prisma.TaskCreateInput, "createdBy">>;
+export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
 
 export const createTaskAiSchema = createTaskSchema
 	.pick({

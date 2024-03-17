@@ -15,4 +15,4 @@ export const createTaskRepository = () => {
 	};
 };
 
-export type TaskRepositoryType = ReturnType<typeof createTaskRepository>;
+export type TaskRepository = ReturnType<typeof createTaskRepository>;
