@@ -28,9 +28,15 @@ export const env = createEnv({
 			// VERCEL_URL doesn't include `https` so it cant be validated as a URL
 			process.env.VERCEL ? z.string() : z.string().url(),
 		),
+
 		AUTH0_CLIENT_ID: z.string(),
 		AUTH0_CLIENT_SECRET: z.string(),
 		AUTH0_ISSUER: z.string(),
+
+		GCLOUD_ACCESS_TOKEN: z.string(),
+		GCLOUD_PROJECT_ID: z.string(),
+		GCLOUD_LOCATION: z.string(),
+		GCLOUD_AI_MODEL: z.string(),
 	},
 
 	/**
@@ -51,9 +57,15 @@ export const env = createEnv({
 		NODE_ENV: process.env.NODE_ENV,
 		NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
 		NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+
 		AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID,
 		AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
 		AUTH0_ISSUER: process.env.AUTH0_ISSUER,
+
+		GCLOUD_ACCESS_TOKEN: process.env.GCLOUD_ACCESS_TOKEN,
+		GCLOUD_PROJECT_ID: process.env.GCLOUD_PROJECT_ID,
+		GCLOUD_LOCATION: process.env.GCLOUD_LOCATION,
+		GCLOUD_AI_MODEL: process.env.GCLOUD_AI_MODEL,
 	},
 	/**
 	 * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
