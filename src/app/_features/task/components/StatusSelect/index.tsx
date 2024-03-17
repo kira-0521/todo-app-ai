@@ -1,3 +1,5 @@
+"use client";
+
 import { Select } from "@mantine/core";
 import type { Status } from "@prisma/client";
 import { memo } from "react";

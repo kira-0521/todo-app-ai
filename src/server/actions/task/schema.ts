@@ -1,4 +1,3 @@
-import type { FileWithPath } from "@mantine/dropzone";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
 
@@ -20,7 +19,7 @@ export const createTaskAiSchema = createTaskSchema
 	.merge(
 		z.object({
 			statusId: z.string().trim(),
-			thumbnail: z.custom<FileWithPath[]>().transform((file) => file),
+			thumbnail: z.custom<File>().transform((file) => file),
 		}),
 	);
 export type CreateTaskAiSchema = z.infer<typeof createTaskAiSchema>;

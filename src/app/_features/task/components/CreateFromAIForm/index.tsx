@@ -1,7 +1,8 @@
 "use client";
 
+import { FileInput, rem } from "@mantine/core";
+import { IconAt } from "@tabler/icons-react";
 import { type FC, memo } from "react";
-import { Dropzone } from "~/app/_components";
 import { createTaskFromAIAction } from "~/server/actions";
 import { api } from "~/trpc/react";
 import { Form, StatusSelect, TitleInput } from "..";
@@ -18,15 +19,14 @@ export const CreateTaskFromAIForm: FC = memo(() => {
 		>
 			<TitleInput />
 			<StatusSelect allStatus={allStatus ?? []} />
-			<Dropzone
+			<FileInput
+				id="thumbnail"
 				name="thumbnail"
-				onSelected={(file) => {
-					// TODO: 選択したファイルを表示する
-					console.log(
-						"========================== onSelected:file ==========================",
-						file,
-					);
-				}}
+				label="Thumbnail"
+				placeholder="Upload Thumbnail"
+				description="AI reads thumbnails and creates tasks"
+				withAsterisk
+				leftSection={<IconAt style={{ width: rem(18), height: rem(18) }} />}
 			/>
 		</Form>
 	);

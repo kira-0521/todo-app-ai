@@ -4,8 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
-import { checkExistId as checkExistStatusId } from "~/server/useCases";
+import { createStatusRepository } from "~/server/repository";
+import { checkExistId as checkExistStatusId } from "~/server/service";
 import { createTaskSchema } from "./schema";
+
+const statusRepository = createStatusRepository();
 
 export const createTaskAction = async (formData: FormData) => {
 	const entries = Object.fromEntries(formData);
@@ -22,7 +25,10 @@ export const createTaskAction = async (formData: FormData) => {
 		throw new Error(validatedData.error.issues[0]?.message);
 	}
 
-	const isExist = await checkExistStatusId(validatedData.data.statusId);
+	const isExist = await checkExistStatusId(
+		statusRepository,
+		validatedData.data.statusId,
+	);
 	if (!isExist) throw new Error("Invalid statusId");
 
 	const session = await getServerAuthSession();

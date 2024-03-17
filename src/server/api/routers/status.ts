@@ -1,12 +1,15 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createStatusRepository } from "~/server/repository";
+
+const statusRepository = createStatusRepository();
 
 export const statusRouter = createTRPCRouter({
 	create: protectedProcedure
 		.input(z.object({ title: z.string().min(1), displayOrder: z.number() }))
 		.mutation(async ({ ctx, input }) => {
-			return await ctx.db.status.create({
+			return await statusRepository.create({
 				data: {
 					title: input.title,
 					displayOrder: input.displayOrder,
@@ -15,13 +18,12 @@ export const statusRouter = createTRPCRouter({
 			});
 		}),
 
-	getAll: protectedProcedure.query(async ({ ctx }) => {
-		// await new Promise((resolve) => setTimeout(resolve, 3000));
-		return await ctx.db.status.findMany();
+	getAll: protectedProcedure.query(async () => {
+		return await statusRepository.findAll();
 	}),
 
 	getLatest: protectedProcedure.query(({ ctx }) => {
-		return ctx.db.status.findFirst({
+		return statusRepository.findFirst({
 			orderBy: { createdAt: "desc" },
 			where: { createdBy: { id: ctx.session.user.id } },
 		});
