@@ -3,21 +3,26 @@ import type {
 	GenerativeContentBlob,
 } from "@google-cloud/vertexai";
 import { generativeModel } from "./init";
+import { generatePrompt } from "./prompt/prompt";
 
 export const generateTask = async ({
-	prompt,
 	image,
 }: {
-	prompt: string;
 	image: GenerativeContentBlob;
 }) => {
 	const req: GenerateContentRequest = {
 		contents: [
-			{ role: "user", parts: [{ text: prompt }, { inline_data: image }] },
+			{
+				role: "user",
+				parts: [
+					...(await generatePrompt()),
+					{
+						inline_data: image,
+					},
+				],
+			},
 		],
 	};
-
-	console.log("========================== req ==========================", req);
 
 	const streamingResp = await generativeModel.generateContentStream(req);
 
@@ -25,7 +30,12 @@ export const generateTask = async ({
 		process.stdout.write(`stream chunk: ${JSON.stringify(item)}`);
 	}
 
-	process.stdout.write(
-		`aggregated response: ${JSON.stringify(await streamingResp.response)}`,
-	);
+	const {
+		candidates: [content],
+	} = await streamingResp.response;
+	if (!content) throw new Error("Invalid content");
+	const {
+		content: { parts },
+	} = content;
+	return parts;
 };
