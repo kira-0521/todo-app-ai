@@ -48,12 +48,13 @@ export const createTaskFromAIAction = async (
 				data: base64String,
 			},
 		});
+		const STATUS_ID_NOT_STARTED = 1;
 		const result = await Promise.all(
 			generatedTasks.columns.map((column) =>
 				createTaskService(taskRepository, statusRepository, {
 					title: column.title,
 					content: column.content,
-					statusId: 1,
+					statusId: STATUS_ID_NOT_STARTED,
 				}),
 			),
 		);

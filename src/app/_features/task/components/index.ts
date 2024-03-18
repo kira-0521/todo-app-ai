@@ -7,3 +7,5 @@ export * from "./TitleInput";
 export * from "./Form";
 export * from "./ContentTextarea";
 export * from "./StatusSelect";
+export * from "./DetailDrawer";
+export * from "./Detail";

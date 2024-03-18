@@ -1,10 +1,7 @@
 import type { CreateTaskSchema } from "~/server/actions";
 import { getServerAuthSession } from "~/server/auth";
 import { checkExistStatusId } from "~/server/domainService";
-import type {
-	StatusRepositoryType as StatusRepository,
-	TaskRepository,
-} from "~/server/repository";
+import type { StatusRepository, TaskRepository } from "~/server/repository";
 
 const NON_EXISTING_STATUS_ID = -1;
 export const createTaskService = async (

@@ -29,6 +29,7 @@ export const CreateTaskFromAIForm: FC = memo(() => {
 			notifications.show({
 				title: "CreateTask",
 				message: `Created ${state.length} tasks`,
+				color: "green",
 			});
 			router.refresh();
 		}

@@ -6,6 +6,7 @@ import { useListState } from "@mantine/hooks";
 import type { Task } from "@prisma/client";
 import { IconGripVertical } from "@tabler/icons-react";
 import cx from "clsx";
+import { useRouter } from "next/navigation";
 import type { FC } from "react";
 import classes from "./index.module.css";
 
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const TaskList: FC<Props> = ({ taskList }) => {
+	const router = useRouter();
 	const [state, handlers] = useListState(taskList);
 
 	const items = state.map((item, index) => (
@@ -23,6 +25,7 @@ export const TaskList: FC<Props> = ({ taskList }) => {
 					className={cx(classes.item, {
 						[classes.itemDragging ?? ""]: snapshot.isDragging,
 					})}
+					onClick={() => router.push(`/task/${item.id}`)}
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 				>

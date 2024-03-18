@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -17,12 +18,36 @@ try {
 			},
 			tasks: {
 				create: [
-					{ title: "カレー", statusId: 1 },
-					{ title: "ラーメン", statusId: 1 },
-					{ title: "カツ丼", statusId: 2 },
-					{ title: "親子丼", statusId: 2 },
-					{ title: "天丼", statusId: 3 },
-					{ title: "牛丼", statusId: 3 },
+					{
+						title: faker.lorem.sentence(),
+						statusId: 1,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 1,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 2,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 2,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 3,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 3,
+						content: faker.lorem.paragraph(),
+					},
 				],
 			},
 		},
@@ -34,12 +59,36 @@ try {
 			email: "bob@example.com",
 			tasks: {
 				create: [
-					{ title: "パン", statusId: 1 },
-					{ title: "サンドイッチ", statusId: 1 },
-					{ title: "ハンバーガー", statusId: 2 },
-					{ title: "ピザ", statusId: 2 },
-					{ title: "寿司", statusId: 3 },
-					{ title: "刺身", statusId: 3 },
+					{
+						title: faker.lorem.sentence(),
+						statusId: 1,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 1,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 2,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 2,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 3,
+						content: faker.lorem.paragraph(),
+					},
+					{
+						title: faker.lorem.sentence(),
+						statusId: 3,
+						content: faker.lorem.paragraph(),
+					},
 				],
 			},
 		},
