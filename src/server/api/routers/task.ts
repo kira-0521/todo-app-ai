@@ -13,7 +13,7 @@ const userRepository = createUserRepository();
 
 export const taskRouter = createTRPCRouter({
 	getAll: protectedProcedure.query(async () => {
-		return await getTaskList(taskRepository);
+		return await getTaskList(taskRepository, statusRepository, userRepository);
 	}),
 	getDetail: protectedProcedure
 		.input(z.object({ id: z.number() }))

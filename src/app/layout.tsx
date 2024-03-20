@@ -6,11 +6,13 @@ import { Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import cx from "clsx";
 import { theme } from "~/app/_css/theme";
 import { getServerAuthSession } from "~/server/auth";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Header } from "./_components/";
 import { AddButtonFixed } from "./_features";
+import classes from "./layout.module.css";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -35,7 +37,7 @@ export default async function RootLayout({
 			<head>
 				<ColorSchemeScript />
 			</head>
-			<body className={inter.className}>
+			<body className={cx(inter.className, classes.body)}>
 				<TRPCReactProvider>
 					<MantineProvider theme={theme} defaultColorScheme="dark">
 						<Notifications position="top-right" />

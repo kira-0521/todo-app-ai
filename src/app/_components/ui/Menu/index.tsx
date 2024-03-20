@@ -1,17 +1,17 @@
 "use client";
 
 import { Menu as MantineMenu, UnstyledButton } from "@mantine/core";
-import { IconDots } from "@tabler/icons-react";
 
 import type { FC, ReactNode } from "react";
 
 type Props = {
 	children: ReactNode;
+	target: ReactNode;
 };
 
-export const Menu: FC<Props> = ({ children }) => {
+export const Menu: FC<Props> = ({ children, target }) => {
 	return (
-		<MantineMenu shadow="md" width={200}>
+		<MantineMenu shadow="md" width={200} withArrow>
 			<MantineMenu.Target>
 				<UnstyledButton
 					style={{
@@ -20,7 +20,7 @@ export const Menu: FC<Props> = ({ children }) => {
 						alignItems: "center",
 					}}
 				>
-					<IconDots stroke={2} />
+					{target}
 				</UnstyledButton>
 			</MantineMenu.Target>
 

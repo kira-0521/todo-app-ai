@@ -6,15 +6,23 @@ import {
 	type DropResult,
 	Droppable,
 } from "@hello-pangea/dnd";
-import type { Status, Task } from "@prisma/client";
+import type { Status } from "@prisma/client";
 
+import { Avatar, Box, Flex, Text, Title, Tooltip } from "@mantine/core";
 import cx from "clsx";
-import { useRouter } from "next/navigation";
+import { format } from "date-fns";
+import Link from "next/link";
 import { type FC, useState } from "react";
+import type { TaskList as TaskListType } from "~/@types/task";
+import {
+	STATUS_COLOR_MAP,
+	statusGuard,
+} from "~/app/_features/status/@types/status";
+import { DeleteButtonAction } from "..";
 import classes from "./index.module.css";
 
 type Props = {
-	taskList: Task[];
+	taskList: TaskListType;
 	statusList: Status[];
 };
 
@@ -22,8 +30,8 @@ type Props = {
  * Moves an item from one list to another list.
  */
 const move = (
-	source: List,
-	destination: List,
+	source: TaskListType,
+	destination: TaskListType,
 	droppableSource: DropResult["source"],
 	droppableDestination: DropResult["destination"],
 ) => {
@@ -34,14 +42,14 @@ const move = (
 	if (!droppableDestination || !removed) return;
 	destClone.splice(droppableDestination.index, 0, removed);
 
-	const result = {} as Record<number, List>;
+	const result = {} as Record<number, TaskListType>;
 	result[Number.parseInt(droppableSource.droppableId, 10)] = sourceClone;
 	result[Number.parseInt(droppableDestination.droppableId, 10)] = destClone;
 
 	return result;
 };
 
-const reorder = (list: List, startIndex: number, endIndex: number) => {
+const reorder = (list: TaskListType, startIndex: number, endIndex: number) => {
 	const result = Array.from(list);
 	const [removed] = result.splice(startIndex, 1);
 	if (!removed) return;
@@ -50,9 +58,7 @@ const reorder = (list: List, startIndex: number, endIndex: number) => {
 	return result;
 };
 
-type List = Task[];
 export const TaskList: FC<Props> = ({ taskList, statusList }) => {
-	const router = useRouter();
 	const [state, setState] = useState(
 		statusList.map((s) => taskList.filter((t) => t.statusId === s.id)),
 	);
@@ -95,43 +101,81 @@ export const TaskList: FC<Props> = ({ taskList, statusList }) => {
 	};
 
 	return (
-		<DragDropContext onDragEnd={handleDragEnd}>
-			{statusList.map((el, idx) => (
-				<Droppable key={el.id} droppableId={`${idx}`}>
-					{(provided, snapshot) => (
-						<div
-							ref={provided.innerRef}
-							className={cx(classes.board, {
-								[classes.boardDragOver ?? ""]: snapshot.isDraggingOver,
-							})}
-							{...provided.droppableProps}
-						>
-							{(state[idx] ?? []).map((card, index) => (
-								<Draggable
-									key={card.id}
-									draggableId={card.id.toString()}
-									index={index}
+		<div className={classes.board}>
+			<DragDropContext onDragEnd={handleDragEnd}>
+				{statusList.map((status, idx) => (
+					<Droppable key={status.id} droppableId={`${idx}`}>
+						{(provided, snapshot) => (
+							<div
+								ref={provided.innerRef}
+								className={cx(classes.panel, {
+									[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
+								})}
+								{...provided.droppableProps}
+							>
+								<Title
+									order={2}
+									c={
+										statusGuard(status.title)
+											? STATUS_COLOR_MAP[status.title]
+											: "dark"
+									}
+									className={cx(classes.heading, {
+										[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
+									})}
 								>
-									{(provided, snapshot) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.draggableProps}
-											{...provided.dragHandleProps}
-											className={cx(classes.card, {
-												[classes.cardDragging ?? ""]: snapshot.isDragging,
-											})}
-											onClick={() => router.push(`/task/${card.id}`)}
+									{status.title}
+								</Title>
+								<Box className={classes.tasks}>
+									{(state[idx] ?? []).map((card, index) => (
+										<Draggable
+											key={card.id}
+											draggableId={card.id.toString()}
+											index={index}
 										>
-											<div className={classes.dragHandle}>{card.title}</div>
-										</div>
-									)}
-								</Draggable>
-							))}
-							{provided.placeholder}
-						</div>
-					)}
-				</Droppable>
-			))}
-		</DragDropContext>
+											{(provided, snapshot) => (
+												<div
+													ref={provided.innerRef}
+													{...provided.draggableProps}
+													{...provided.dragHandleProps}
+													className={cx(classes.card, {
+														[classes.cardDragging ?? ""]: snapshot.isDragging,
+													})}
+												>
+													<Flex
+														direction="column"
+														gap="xs"
+														className={classes.dragHandle}
+													>
+														<Link
+															href={`/task/${card.id}`}
+															className={classes.cardLink}
+														>
+															<Title order={4} lineClamp={2}>
+																{card.title}
+															</Title>
+															<Text lineClamp={2} c="dimmed">
+																created: {format(card.createdAt, "yyyy-MM-dd")}
+															</Text>
+														</Link>
+														<Flex align="center" gap="xs">
+															<Tooltip label={card.username}>
+																<Avatar size="sm" src={card.userIconUrl} />
+															</Tooltip>
+															<DeleteButtonAction id={card.id} />
+														</Flex>
+													</Flex>
+												</div>
+											)}
+										</Draggable>
+									))}
+								</Box>
+								{provided.placeholder}
+							</div>
+						)}
+					</Droppable>
+				))}
+			</DragDropContext>
+		</div>
 	);
 };

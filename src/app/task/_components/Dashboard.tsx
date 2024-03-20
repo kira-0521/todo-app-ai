@@ -1,5 +1,3 @@
-import { Flex } from "@mantine/core";
-
 import type { FC } from "react";
 import { api } from "~/trpc/server";
 import { CreateModal, TaskList } from "../../_features";
@@ -17,9 +15,7 @@ export const Dashboard: FC<Props> = async ({ isOpenModal, createType }) => {
 
 	return (
 		<>
-			<Flex gap={20}>
-				<TaskList taskList={tasks} statusList={statuses} />
-			</Flex>
+			<TaskList taskList={tasks} statusList={statuses} />
 			<CreateModal isOpen={isOpenModal} createType={createType ?? "manual"} />
 		</>
 	);

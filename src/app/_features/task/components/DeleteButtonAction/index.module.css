@@ -1,0 +1,11 @@
+.deleteButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  color: var(--mantine-color-red-7);
+  width: 1.2rem;
+  height: 1.2rem;
+}
