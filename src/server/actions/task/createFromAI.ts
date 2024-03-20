@@ -70,7 +70,7 @@ export const createTaskFromAIAction = async (
 		);
 		return {
 			status: "error",
-			message: `Failed to generate task: ${error}`,
+			message: "Failed to generate task. Please Retry.",
 		} satisfies CreateTaskFromAIState;
 	}
 };

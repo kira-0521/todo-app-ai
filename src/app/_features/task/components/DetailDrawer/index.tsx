@@ -1,13 +1,15 @@
 "use client";
 
-import { Drawer, Menu as MantineMenu, rem } from "@mantine/core";
+import { Drawer, UnstyledButton, rem } from "@mantine/core";
 import { notFound, useRouter } from "next/navigation";
-import { Suspense, memo } from "react";
+import { Suspense, memo, useEffect } from "react";
 import classes from "./index.module.css";
 
+import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import type { FC } from "react";
-import { Menu } from "~/app/_components";
+import { useFormState } from "react-dom";
+import { deleteTaskAction } from "~/server/actions";
 import { Detail } from "..";
 import { DetailSkeleton } from "../Detail/skelton";
 
@@ -16,11 +18,24 @@ type Props = {
 };
 
 export const DetailDrawer: FC<Props> = memo(({ id }) => {
+	const [state, dispatchAction] = useFormState(deleteTaskAction, {
+		message: "",
+	});
 	const router = useRouter();
 	const parsedId = Number.parseInt(id, 10);
 	if (!parsedId || typeof parsedId !== "number") {
 		notFound();
 	}
+
+	useEffect(() => {
+		if (state.message) {
+			notifications.show({
+				color: "danger",
+				title: "Delete Task",
+				message: state.message,
+			});
+		}
+	}, [state]);
 
 	return (
 		<Drawer
@@ -32,17 +47,15 @@ export const DetailDrawer: FC<Props> = memo(({ id }) => {
 		>
 			<Drawer.Header className={classes.header}>
 				<Drawer.CloseButton className={classes.closeButton} />
-				<Menu>
-					<MantineMenu.Label>Danger zone</MantineMenu.Label>
-					<MantineMenu.Item
-						color="danger"
-						leftSection={
-							<IconTrash style={{ width: rem(14), height: rem(14) }} />
-						}
-					>
-						Delete
-					</MantineMenu.Item>
-				</Menu>
+				<form action={dispatchAction} className={classes.deleteButton}>
+					<input type="hidden" name="id" value={id} />
+					<UnstyledButton type="submit" className={classes.deleteButton}>
+						<IconTrash
+							color="red"
+							style={{ width: rem(20), height: rem(20) }}
+						/>
+					</UnstyledButton>
+				</form>
 			</Drawer.Header>
 			<Suspense fallback={<DetailSkeleton />}>
 				<Detail id={parsedId} />
