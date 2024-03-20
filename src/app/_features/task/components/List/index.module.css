@@ -1,4 +1,17 @@
-.item {
+.board {
+  background: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-4));
+  padding: 1rem;
+  border: 1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  width: 300px;
+}
+
+.boardDragOver {
+  background: blue;
+}
+
+.card {
   display: flex;
   align-items: center;
   border-radius: var(--mantine-radius-md);
@@ -7,14 +20,14 @@
   padding-left: calc(var(--mantine-spacing-xl) - var(--mantine-spacing-md));
   background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-5));
   margin-bottom: var(--mantine-spacing-sm);
-  cursor: pointer;
+  cursor: grab;
 
   &:hover {
     background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-4));
   }
 }
 
-.itemDragging {
+.cardDragging {
   box-shadow: var(--mantine-shadow-sm);
 }
 
