@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import type { FC } from "react";
 import { api } from "~/trpc/server";
 import { CreateModal, TaskList } from "../../_features";
@@ -10,6 +11,8 @@ type Props =
 	  };
 
 export const Dashboard: FC<Props> = async ({ isOpenModal, createType }) => {
+	// INFO: Blocked：Dynamic server usage: Page couldn't be rendered statically because it used `headers`.
+	noStore();
 	const statuses = await api.status.getAll.query();
 	const tasks = await api.task.getAll.query();
 
