@@ -13,8 +13,8 @@ type Props =
 export const Dashboard: FC<Props> = async ({ isOpenModal, createType }) => {
 	// INFO: Blocked：Dynamic server usage: Page couldn't be rendered statically because it used `headers`.
 	noStore();
-	const statuses = await api.status.getAll.query();
 	const tasks = await api.task.getAll.query();
+	const statuses = await api.status.getAll.query();
 
 	return (
 		<>
