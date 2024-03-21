@@ -1,1 +1,2 @@
-export * from "./useDeleteTask";
+export * from "./useDeleteTaskAction";
+export * from "./useUpdateTaskAction";

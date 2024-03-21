@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import type { TaskDetail } from "~/@types/task";
+import { parseStatusId } from "~/server/domainService";
+import { parseTaskId } from "~/server/domainService/task";
 import {
 	createStatusRepository,
 	createTaskRepository,
@@ -19,17 +21,24 @@ const statusRepository = createStatusRepository();
 const userRepository = createUserRepository();
 
 export const updateTaskAction = async (
-	formData: FormData,
 	state: UpdateTaskActionState,
+	formData: FormData,
 ) => {
 	let updatedTask: TaskDetail;
 	try {
-		const entries = Object.entries(formData);
-		const validatedData = updateTaskSchema.safeParse(entries);
+		const entries = Object.fromEntries(formData);
+		const parsedTaskId = parseTaskId(formData);
+		const parsedStatusId = parseStatusId(formData);
+		const validatedData = updateTaskSchema.safeParse({
+			...entries,
+			id: parsedTaskId,
+			statusId: parsedStatusId,
+		});
 		if (!validatedData.success) {
+			const { issues } = validatedData.error;
 			return {
 				...state,
-				message: "Failed to update task",
+				message: `Failed to update task: ${issues[0]?.path} ${issues[0]?.message}`,
 			};
 		}
 		updatedTask = await updateTask(
@@ -41,11 +50,12 @@ export const updateTaskAction = async (
 	} catch (error: unknown) {
 		return {
 			...state,
-			message:
-				error && error instanceof Error
-					? error.message
-					: "Failed to update task",
+			message: error && error instanceof Error ? error.message : "Failed",
 		};
 	}
 	revalidatePath(`/task/${updatedTask.id}`);
+	return {
+		...state,
+		message: "",
+	};
 };

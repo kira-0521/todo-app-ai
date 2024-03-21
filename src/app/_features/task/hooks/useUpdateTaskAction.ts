@@ -1,10 +1,10 @@
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
-import { deleteTaskAction } from "~/server/actions";
+import { updateTaskAction } from "~/server/actions";
 
-export const useDeleteTask = () => {
-	const [state, dispatchAction] = useFormState(deleteTaskAction, {
+export const useUpdateTaskAction = () => {
+	const [state, formAction] = useFormState(updateTaskAction, {
 		message: "",
 	});
 
@@ -12,13 +12,13 @@ export const useDeleteTask = () => {
 		if (state.message) {
 			notifications.show({
 				color: "danger",
-				title: "Delete Task",
+				title: "Failed",
 				message: state.message,
 			});
 		}
 	}, [state]);
 
 	return {
-		dispatchDeleteTaskAction: dispatchAction,
+		formAction,
 	};
 };

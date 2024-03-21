@@ -25,11 +25,8 @@ export type DeleteTaskSchema = z.infer<typeof deleteTaskSchema>;
 
 export const updateTaskSchema = z.object({
 	id: z.number(),
-	title: z.string().trim().optional(),
-	content: z.string().trim().optional(),
-	statusId: z
-		.number()
-		.min(1, { message: "statusId is larger than 0" })
-		.optional(),
+	title: z.string().trim(),
+	content: z.string().trim(),
+	statusId: z.number().min(1, { message: "statusId is larger than 0" }),
 });
 export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;

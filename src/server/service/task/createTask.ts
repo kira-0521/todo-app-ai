@@ -1,18 +1,18 @@
+import { NON_EXISTING_ID } from "~/constants";
 import type { CreateTaskSchema } from "~/server/actions";
 import { getServerAuthSession } from "~/server/auth";
 import { checkExistStatusId } from "~/server/domainService";
 import type { StatusRepository, TaskRepository } from "~/server/repository";
 
-const NON_EXISTING_STATUS_ID = -1;
 export const createTaskService = async (
 	repository: TaskRepository,
 	statusRepository: StatusRepository,
 	data: CreateTaskSchema,
 ) => {
-	const statusId = data.statusId ?? NON_EXISTING_STATUS_ID;
+	const statusId = data.statusId ?? NON_EXISTING_ID;
 	const isExistStatus = await checkExistStatusId(
 		statusRepository,
-		statusId ?? NON_EXISTING_STATUS_ID,
+		statusId ?? NON_EXISTING_ID,
 	);
 	if (!isExistStatus) throw new Error("Invalid statusId");
 

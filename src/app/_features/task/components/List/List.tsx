@@ -12,13 +12,16 @@ import { Avatar, Box, Flex, Text, Title, Tooltip } from "@mantine/core";
 import cx from "clsx";
 import { format } from "date-fns";
 import Link from "next/link";
-import { type FC, useState } from "react";
+import { type FC, useState, useTransition } from "react";
 import type { TaskList as TaskListType } from "~/@types/task";
 import {
 	STATUS_COLOR_MAP,
 	statusGuard,
 } from "~/app/_features/status/@types/status";
+import { NON_EXISTING_ID } from "~/constants";
+import { toFormDataForUpdateTask } from "~/server/actions";
 import { DeleteButtonAction } from "..";
+import { useUpdateTaskAction } from "../../hooks";
 import classes from "./index.module.css";
 
 type Props = {
@@ -43,10 +46,14 @@ const move = (
 	destClone.splice(droppableDestination.index, 0, removed);
 
 	const result = {} as Record<number, TaskListType>;
-	result[Number.parseInt(droppableSource.droppableId, 10)] = sourceClone;
-	result[Number.parseInt(droppableDestination.droppableId, 10)] = destClone;
+	const srcId = Number.parseInt(droppableSource.droppableId, 10);
+	const destId = Number.parseInt(droppableDestination.droppableId, 10);
+	result[srcId] = sourceClone;
+	result[destId] = destClone;
 
-	return result;
+	return {
+		result,
+	};
 };
 
 const reorder = (list: TaskListType, startIndex: number, endIndex: number) => {
@@ -62,6 +69,8 @@ export const TaskList: FC<Props> = ({ taskList, statusList }) => {
 	const [state, setState] = useState(
 		statusList.map((s) => taskList.filter((t) => t.statusId === s.id)),
 	);
+	const { formAction: updateAction } = useUpdateTaskAction();
+	const [, startTransition] = useTransition();
 
 	const handleDragEnd = (result: DropResult) => {
 		const { source, destination } = result;
@@ -85,17 +94,32 @@ export const TaskList: FC<Props> = ({ taskList, statusList }) => {
 
 			setState(newState);
 		} else {
-			// horizontal
+			// horizontal(update status)
 			const [srcLi, destLi] = [state[sIdx], state[dIdx]];
 			if (!srcLi || !destLi) return;
-			const result = move(srcLi, destLi, source, destination);
-			if (!result) return;
+			const moved = move(srcLi, destLi, source, destination);
+			if (!moved) return;
+			const { result } = moved;
 			const newState = [...state];
 			const [srcLiResult, destLiResult] = [result[sIdx], result[dIdx]];
+
+			// TODO: エラーハンドリング
+			// update task
+			const toStatusId = statusList[dIdx]?.id;
+			if (!toStatusId) return;
+			const targetTask = state[sIdx]?.[source.index];
+			const formData = toFormDataForUpdateTask({
+				statusId: toStatusId ?? NON_EXISTING_ID,
+				id: targetTask?.id ?? NON_EXISTING_ID,
+				title: targetTask?.title ?? "",
+				content: targetTask?.content ?? "",
+			});
+			startTransition(() => updateAction(formData));
+
+			// update state
 			if (!srcLiResult || !destLiResult) return;
 			newState[sIdx] = srcLiResult;
 			newState[dIdx] = destLiResult;
-
 			setState(newState.filter((group) => group.length));
 		}
 	};
