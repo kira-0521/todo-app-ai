@@ -7,11 +7,13 @@ import { createTaskRepository } from "~/server/repository";
 import { parseTaskId } from "~/server/domainService/task";
 import { deleteTask } from "~/server/service";
 import { deleteTaskSchema } from ".";
-type DeleteTaskActionState = {
-	message: string;
-};
 
 const taskRepository = createTaskRepository();
+
+type DeleteTaskActionState = {
+	status: "success" | "error";
+	message: string;
+};
 
 export const deleteTaskAction = async (
 	state: DeleteTaskActionState,
@@ -28,9 +30,16 @@ export const deleteTaskAction = async (
 	} catch (error: unknown) {
 		return {
 			...state,
+			status: "error" as const,
 			message: `Failed: ${error}`,
 		} satisfies DeleteTaskActionState;
 	}
 	revalidatePath("/");
 	redirect("/");
+
+	return {
+		...state,
+		status: "success" as const,
+		message: "",
+	};
 };

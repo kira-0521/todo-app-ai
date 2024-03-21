@@ -5,11 +5,12 @@ import { updateTaskAction } from "~/server/actions";
 
 export const useUpdateTaskAction = () => {
 	const [state, formAction] = useFormState(updateTaskAction, {
+		status: "success" as const,
 		message: "",
 	});
 
 	useEffect(() => {
-		if (state.message) {
+		if (state.status === "error" && state.message) {
 			notifications.show({
 				color: "danger",
 				title: "Failed",
@@ -19,6 +20,7 @@ export const useUpdateTaskAction = () => {
 	}, [state]);
 
 	return {
+		state,
 		formAction,
 	};
 };

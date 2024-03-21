@@ -13,6 +13,7 @@ import { updateTask } from "~/server/service";
 import { updateTaskSchema } from ".";
 
 type UpdateTaskActionState = {
+	status: "success" | "error";
 	message: string;
 };
 
@@ -38,7 +39,8 @@ export const updateTaskAction = async (
 			const { issues } = validatedData.error;
 			return {
 				...state,
-				message: `Failed to update task: ${issues[0]?.path} ${issues[0]?.message}`,
+				status: "error" as const,
+				message: `Failed: ${issues[0]?.path} ${issues[0]?.message}`,
 			};
 		}
 		updatedTask = await updateTask(
@@ -50,12 +52,14 @@ export const updateTaskAction = async (
 	} catch (error: unknown) {
 		return {
 			...state,
+			status: "error" as const,
 			message: error && error instanceof Error ? error.message : "Failed",
 		};
 	}
 	revalidatePath(`/task/${updatedTask.id}`);
 	return {
 		...state,
+		status: "success" as const,
 		message: "",
 	};
 };
