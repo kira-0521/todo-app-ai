@@ -1,20 +1,15 @@
 "use client";
 
-import {
-	Anchor,
-	Avatar,
-	Container,
-	Flex,
-	Tooltip,
-	useMantineTheme,
-} from "@mantine/core";
+import { Avatar, Container, Flex, rem } from "@mantine/core";
+import { Menu as MantineMenu } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
 import Link from "next/link";
 import { memo } from "react";
 import classes from "./index.module.css";
 
 import type { FC } from "react";
-import { COLOR_VALIANTS_MAP } from "~/constants";
+
+import { Menu } from "../..";
 
 type Props = {
 	avatar?: string;
@@ -22,8 +17,6 @@ type Props = {
 };
 
 export const Header: FC<Props> = memo(({ avatar, username }) => {
-	const theme = useMantineTheme();
-
 	return (
 		<Container component="header" className={classes.header} fluid>
 			<Flex
@@ -32,20 +25,21 @@ export const Header: FC<Props> = memo(({ avatar, username }) => {
 				gap={12}
 				className={classes.inner}
 			>
-				<Tooltip label={username} position="bottom" offset={5} withArrow>
-					<Avatar src={avatar} alt={username} radius="xl" size={28} />
-				</Tooltip>
-				<Tooltip label="to Signout Page" position="bottom" offset={5} withArrow>
-					<Anchor
+				<Menu
+					target={<Avatar src={avatar} alt={username} radius="xl" size={28} />}
+				>
+					<MantineMenu.Label>Application</MantineMenu.Label>
+					<MantineMenu.Item
+						c="danger"
+						leftSection={
+							<IconLogout style={{ width: rem(14), height: rem(14) }} />
+						}
 						component={Link}
 						href="/api/auth/signout"
-						className={classes.logout}
 					>
-						<IconLogout
-							color={theme.colors.danger?.[COLOR_VALIANTS_MAP.main] || "black"}
-						/>
-					</Anchor>
-				</Tooltip>
+						SignOut
+					</MantineMenu.Item>
+				</Menu>
 			</Flex>
 		</Container>
 	);

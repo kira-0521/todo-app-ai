@@ -10,10 +10,23 @@ export const createTaskSchema = z.object({
 	content: z.string().trim().optional(),
 	thumbnail: z.string().trim().optional(),
 	statusId: z.number().min(1, { message: "statusId is larger than 0" }),
-}) satisfies z.ZodType<Omit<Prisma.TaskCreateInput, "createdBy">>;
+}) satisfies z.ZodType<Partial<Omit<Prisma.TaskCreateInput, "createdBy">>>;
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
 
 export const createTaskAiSchema = z.object({
 	thumbnail: z.custom<File>().transform((file) => file),
 });
 export type CreateTaskAiSchema = z.infer<typeof createTaskAiSchema>;
+
+export const deleteTaskSchema = z.object({
+	id: z.number(),
+});
+export type DeleteTaskSchema = z.infer<typeof deleteTaskSchema>;
+
+export const updateTaskSchema = z.object({
+	id: z.number(),
+	title: z.string().trim(),
+	content: z.string().trim(),
+	statusId: z.number().min(1, { message: "statusId is larger than 0" }),
+});
+export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;

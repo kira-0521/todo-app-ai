@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { parseStatusId } from "~/server/domainService";
 import {
 	createStatusRepository,
 	createTaskRepository,
@@ -21,10 +22,7 @@ export const createTaskAction = async (
 	formData: FormData,
 ) => {
 	const entries = Object.fromEntries(formData);
-
-	if (typeof entries.statusId !== "string")
-		throw new Error(`Invalid statusId: ${entries.statusId}`);
-	const parsedStatusId = Number.parseInt(entries.statusId, 10);
+	const parsedStatusId = parseStatusId(formData);
 	const validatedData = createTaskSchema.safeParse({
 		...entries,
 		statusId: parsedStatusId,

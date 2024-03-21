@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { createStatusRepository } from "~/server/repository";
+import { getStatusDetail } from "~/server/service/status";
 
 const statusRepository = createStatusRepository();
 
@@ -22,10 +23,9 @@ export const statusRouter = createTRPCRouter({
 		return await statusRepository.findAll();
 	}),
 
-	getLatest: protectedProcedure.query(({ ctx }) => {
-		return statusRepository.findFirst({
-			orderBy: { createdAt: "desc" },
-			where: { createdBy: { id: ctx.session.user.id } },
-		});
-	}),
+	getDetail: protectedProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input }) => {
+			return await getStatusDetail(statusRepository, input.id);
+		}),
 });

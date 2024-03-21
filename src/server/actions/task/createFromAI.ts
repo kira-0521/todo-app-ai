@@ -48,12 +48,13 @@ export const createTaskFromAIAction = async (
 				data: base64String,
 			},
 		});
+		const STATUS_ID_NOT_STARTED = 1;
 		const result = await Promise.all(
 			generatedTasks.columns.map((column) =>
 				createTaskService(taskRepository, statusRepository, {
 					title: column.title,
 					content: column.content,
-					statusId: 1,
+					statusId: STATUS_ID_NOT_STARTED,
 				}),
 			),
 		);
@@ -69,7 +70,7 @@ export const createTaskFromAIAction = async (
 		);
 		return {
 			status: "error",
-			message: `Failed to generate task: ${error}`,
+			message: "Failed to generate task. Please Retry.",
 		} satisfies CreateTaskFromAIState;
 	}
 };
