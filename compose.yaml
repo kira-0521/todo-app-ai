@@ -1,26 +1,16 @@
-version: '3.9'
-
+version: '3'
 services:
-  mysql:
-    image: mysql:8.0.27
-    platform: linux/x86_64
+  db:
+    image: postgres:14.5-bullseye
+    platform: linux/arm64/v8
+    container_name: db
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_DATABASE: todo-app-ai
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todo-app-ai
     restart: always
-    networks:
-      - mysql-network
-
-  cli:
-    image: mysql:8.0.27
-    networks:
-      - mysql-network
-    command: mysql -hmysql -uuser -ppassword db
-
-networks:
-  mysql-network:
-    driver: bridge
+    volumes:
+      - ./data:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
