@@ -55,11 +55,11 @@ status:
 logs:
 	docker-compose logs -f
 exec:
-	docker-compose exec mysql sh
+	docker-compose exec postgres sh
 
 # データベース関連のコマンド
 db:
-	docker compose exec mysql sh
+	docker compose exec postgres sh
 db-push:
 	bun run db:push
 db-studio:
