@@ -15,11 +15,6 @@ export const downloadFromImagesForPrompts = async () => {
 		data?.map((img) => supabase.storage.from(BUCKET_NAME).download(img.name)),
 	);
 
-	console.log(
-		"========================== result ==========================",
-		result,
-	);
-
 	if (result.some((r) => r.error)) {
 		throw new Error(result[0]?.error?.message);
 	}
