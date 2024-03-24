@@ -1,15 +1,10 @@
-import fs from "fs";
 import type { Part } from "@google-cloud/vertexai";
-
-const images = [
-	fs.readFileSync("./src/ai/prompt/image/dashboard.png"),
-	fs.readFileSync("./src/ai/prompt/image/modal.png"),
-	fs.readFileSync("./src/ai/prompt/image/form.png"),
-];
+import { downloadFromImagesForPrompts } from "~/libs/supabase";
+import { fileToBase64 } from "../util";
 
 export const generatePrompt = async (): Promise<Part[]> => {
-	const [dashboardImg, modalImg, formImg] = images.map((image) =>
-		image.toString("base64"),
+	const [dashboardImg, modalImg, formImg] = await Promise.all(
+		(await downloadFromImagesForPrompts()).map((image) => fileToBase64(image)),
 	);
 
 	if (!dashboardImg || !modalImg || !formImg) throw new Error("Invalid image");
