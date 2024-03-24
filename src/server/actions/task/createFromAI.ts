@@ -1,7 +1,7 @@
 "use server";
 
-import { generateTask as generateTasks } from "~/ai/generateTask";
-import { fileToBase64 } from "~/ai/util";
+import { generateTask as generateTasks } from "~/libs/ai/generateTask";
+import { fileToBase64 } from "~/libs/ai/util";
 import {
 	createStatusRepository,
 	createTaskRepository,

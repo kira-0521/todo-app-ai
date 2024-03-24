@@ -1,7 +1,8 @@
 "use client";
 
 import { Button, Loader, LoadingOverlay, Stack } from "@mantine/core";
-import { memo } from "react";
+import { notifications } from "@mantine/notifications";
+import { memo, useEffect } from "react";
 
 import type { ComponentPropsWithoutRef, FC, ReactNode } from "react";
 import { useFormStatus } from "react-dom";
@@ -14,6 +15,17 @@ type Props = {
 
 const SubmitButton = () => {
 	const { pending } = useFormStatus();
+
+	useEffect(() => {
+		if (pending) {
+			notifications.show({
+				message: "AI is creating tasks...",
+				loading: pending,
+				color: "secondary",
+			});
+		}
+	}, [pending]);
+
 	return (
 		<Button type="submit" disabled={pending} loading={pending}>
 			Submit

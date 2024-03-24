@@ -73,7 +73,7 @@ db-seed:
 db-status:
 	bunx prisma migrate status
 db-fresh:
-	bunx prisma migrate reset --skip-generate --skip-seed && make db-push
+	bunx prisma migrate reset
 
 # 開発ツール関連のコマンド
 dev:
