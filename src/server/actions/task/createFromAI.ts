@@ -1,7 +1,7 @@
 "use server";
 
-import { generateTask as generateTasks } from "~/libs/ai/generateTask";
-import { fileToBase64 } from "~/libs/ai/util";
+import { generateTask as generateTasks } from "~/libs/google-cloud/ai/generateTask";
+import { fileToBase64 } from "~/libs/google-cloud/ai/util";
 import {
 	createStatusRepository,
 	createTaskRepository,
@@ -44,7 +44,7 @@ export const createTaskFromAIAction = async (
 		const generatedTasks = await generateTasks({
 			image: {
 				// TODO: mimetype取得
-				mime_type: "image/png",
+				mimeType: "image/png",
 				data: base64String,
 			},
 		});
@@ -65,7 +65,7 @@ export const createTaskFromAIAction = async (
 		} satisfies CreateTaskFromAIState;
 	} catch (error) {
 		console.error(
-			"\n========================== error ==========================",
+			"\n========================== error ==========================\n",
 			error,
 		);
 		return {

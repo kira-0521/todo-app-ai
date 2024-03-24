@@ -37,6 +37,7 @@ export const env = createEnv({
 		GCLOUD_PROJECT_ID: z.string(),
 		GCLOUD_LOCATION: z.string(),
 		GCLOUD_AI_MODEL: z.string(),
+		GCLOUD_API_KEY: z.string(),
 
 		SUPABASE_URL: z.string(),
 		SUPABASE_ANON_KEY: z.string(),
@@ -69,6 +70,7 @@ export const env = createEnv({
 		GCLOUD_PROJECT_ID: process.env.GCLOUD_PROJECT_ID,
 		GCLOUD_LOCATION: process.env.GCLOUD_LOCATION,
 		GCLOUD_AI_MODEL: process.env.GCLOUD_AI_MODEL,
+		GCLOUD_API_KEY: process.env.GCLOUD_API_KEY,
 
 		SUPABASE_URL: process.env.SUPABASE_URL,
 		SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
