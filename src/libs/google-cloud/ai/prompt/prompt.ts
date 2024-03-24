@@ -20,7 +20,7 @@ export const generatePrompt = async (): Promise<Part[]> => {
 			},
 		},
 		{
-			text: '{"columns": [{"title": "Header Implementation", "content": "- [ ] Implement icon component - [ ] Implement header component - [ ] Implement common button component"}, {"title": "Task List Implementation", "content": "- [ ] Implement task panel component - [ ] Implement task list component"}, {"title": "Add Task Button Implementation", "content": "- [ ] Implement add task button component"}, {"title": "Dashboard Page Implementation", "content": "- [ ] Place header - [ ] Place task list - [ ] Place add task button"}]}',
+			text: '{"columns": [{"title": "Header Implementation", "content": "- [ ] Implement icon component - [ ] Implement header component - [ ] Implement common button component"}, {"title": "Task List Implementation", "content": "- [ ] Implement task panel component - [ ] Implement task list component"}, {"title": "Add Task Button Implementation", "content": "- [ ] Implement add task button component"}, {"title": "Dashboard Page Implementation", "content": "- [ ] Place header - [ ] Place task list - [ ] Place add task button - [ ] styling"}]}',
 		},
 		{
 			inlineData: {
@@ -29,7 +29,7 @@ export const generatePrompt = async (): Promise<Part[]> => {
 			},
 		},
 		{
-			text: '{"columns": [{"title": "Modal Implementation", "content": "- [ ] Implement common modal component - [ ] Implement modal component"}]}',
+			text: '{"columns": [{"title": "Header Implementation", "content": "- [ ] Implement Logo component - [ ] Implement header component - [ ] Implement icons component - [ ] Implement icons event - [ ] styling"},{"title": "Admin User Management Form Implementation", "content": "- [ ] Implement FormHeader - [ ] Implement common input component - [ ] Implement Firstame - [ ] Implement Lastname - [ ] Implement Email - [ ] Implement Password - [ ] Implement Role - [ ] Implement CreateUser Button"},{"title": "Footer Implementation", "content": "- [ ] Implement Footer component - [ ] Implement All right reserved - [ ] styling" }]}',
 		},
 		{
 			inlineData: {
@@ -38,10 +38,7 @@ export const generatePrompt = async (): Promise<Part[]> => {
 			},
 		},
 		{
-			text: '{"columns": [{"title": "Form Component Implementation", "content": "- [ ] Implement common form component - [ ] Implement common input component"}]}',
-		},
-		{
-			text: "Generate tasks based on this image.",
+			text: '{"columns": [{"title": "Header Implementation", "content": "- [ ] Implement Logo component - [ ] Implement header component - [ ] Implement search component - [ ] Implement share component - [ ] styling"},{"title": "Orders Table Implementation", "content": "- [ ] Implement table component - [ ] Implement table header component - [ ] Implement table body component - [ ] Implement table row component - [ ] Implement table cell component - [ ] styling"},{"title": "Footer Implementation", "content": "- [ ] Implement Footer component - [ ] Implement All right reserved - [ ] styling"}]}',
 		},
 	];
 };
