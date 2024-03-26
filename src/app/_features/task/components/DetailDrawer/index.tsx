@@ -28,6 +28,7 @@ export const DetailDrawer: FC<Props> = memo(({ id }) => {
 			position="right"
 			size="xl"
 			withCloseButton={false}
+			withOverlay={false}
 			transitionProps={{
 				transition: "slide-right",
 				duration: 300,

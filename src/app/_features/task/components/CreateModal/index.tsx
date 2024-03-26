@@ -29,6 +29,7 @@ export const CreateModal: FC<Props> = memo(({ isOpen, createType }) => {
 				backgroundOpacity: 0.55,
 				blur: 3,
 			}}
+			transitionProps={{ transition: "fade", duration: 200 }}
 		>
 			<ErrorBoundary
 				errorComponent={({ error, reset }) => {
