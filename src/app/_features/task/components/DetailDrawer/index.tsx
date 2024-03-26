@@ -23,13 +23,13 @@ export const DetailDrawer: FC<Props> = memo(({ id }) => {
 
 	return (
 		<Drawer
-			opened
+			opened={!!parsedId}
 			onClose={() => router.push("/")}
 			position="right"
 			size="xl"
 			withCloseButton={false}
 			transitionProps={{
-				transition: "rotate-right",
+				transition: "slide-right",
 				duration: 300,
 				timingFunction: "linear",
 			}}
