@@ -14,7 +14,7 @@ export function CreateTaskForm() {
 	const { data: allStatus, isLoading } = api.status.getAll.useQuery();
 
 	useEffect(() => {
-		if (state.errorMessage) {
+		if (state?.errorMessage) {
 			notifications.show({
 				title: "CreateTask",
 				message: state.errorMessage,

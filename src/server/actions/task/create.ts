@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { parseStatusId } from "~/server/domainService";
 import {
 	createStatusRepository,
@@ -49,5 +48,8 @@ export const createTaskAction = async (
 	}
 
 	revalidatePath("/");
-	redirect("/");
+	return {
+		...state,
+		errorMessage: "",
+	};
 };

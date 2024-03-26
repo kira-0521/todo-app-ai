@@ -28,6 +28,11 @@ export const DetailDrawer: FC<Props> = memo(({ id }) => {
 			position="right"
 			size="xl"
 			withCloseButton={false}
+			transitionProps={{
+				transition: "rotate-right",
+				duration: 300,
+				timingFunction: "linear",
+			}}
 		>
 			<Drawer.Header className={classes.header}>
 				<Drawer.CloseButton className={classes.closeButton} />

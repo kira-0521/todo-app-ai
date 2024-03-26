@@ -40,6 +40,7 @@ export const CreateTaskFromAIForm: FC = memo(() => {
 			form={{
 				action: dispatchAction,
 			}}
+			isAi
 		>
 			<FileInput
 				id="thumbnail"

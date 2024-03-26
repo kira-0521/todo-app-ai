@@ -1,10 +1,10 @@
 import { unstable_noStore as noStore } from "next/cache";
 import type { FC } from "react";
 import { api } from "~/trpc/server";
-import { CreateModal, TaskList } from "../../_features";
+import { CreateModal, type CreateType, TaskList } from "../../_features";
 
 type Props =
-	| { isOpenModal: true; createType: "manual" | "ai" }
+	| { isOpenModal: true; createType: CreateType }
 	| {
 			isOpenModal: false;
 			createType?: never;

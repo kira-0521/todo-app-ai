@@ -9,10 +9,11 @@ import { IconInputAi, IconPencil } from "@tabler/icons-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import type { FC } from "react";
 import { CreateTaskForm, CreateTaskFromAIForm } from "..";
+import type { CreateType } from "../..";
 
 type Props = {
 	isOpen: boolean;
-	createType: "manual" | "ai";
+	createType: CreateType;
 };
 
 export const CreateModal: FC<Props> = memo(({ isOpen, createType }) => {
@@ -48,9 +49,7 @@ export const CreateModal: FC<Props> = memo(({ isOpen, createType }) => {
 			>
 				<Tabs
 					defaultValue={createType}
-					onChange={(value) =>
-						router.push(`/task/create${value === "manual" ? "" : `-${value}`}`)
-					}
+					onChange={(value) => router.push(`/create?type=${value || "manual"}`)}
 				>
 					<Tabs.List>
 						<Tabs.Tab value="manual" leftSection={<IconPencil />}>
