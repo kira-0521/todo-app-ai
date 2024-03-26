@@ -1,9 +1,19 @@
+.wrapper-scrollable {
+  width: 100vw;
+  overflow-x: auto;
+}
+
 .board {
   display: grid;
   gap: var(--mantine-spacing-md);
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   height: 90vh;
   max-height: 90vh;
+}
+
+.board-scrollable {
+  width: 150vw;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 350px));
 }
 
 .panel {

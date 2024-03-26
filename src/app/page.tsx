@@ -9,7 +9,7 @@ export default function Home() {
 	return (
 		<Container>
 			<Suspense fallback={<DashBoardSkelton />}>
-				<Dashboard isOpenModal={false} />
+				<Dashboard />
 			</Suspense>
 		</Container>
 	);

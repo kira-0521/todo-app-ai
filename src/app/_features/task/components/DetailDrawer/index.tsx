@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Suspense, memo } from "react";
 import classes from "./index.module.css";
 
@@ -17,20 +17,20 @@ type Props = {
 export const DetailDrawer: FC<Props> = memo(({ id }) => {
 	const router = useRouter();
 	const parsedId = Number.parseInt(id, 10);
-	if (!parsedId || typeof parsedId !== "number") {
-		notFound();
-	}
 
 	return (
 		<Drawer
 			opened={!!parsedId}
-			onClose={() => router.push("/")}
+			onClose={() => router.push("/task")}
 			position="right"
 			size="xl"
 			withCloseButton={false}
 			withOverlay={false}
+			removeScrollProps={{
+				enabled: false,
+			}}
 			transitionProps={{
-				transition: "slide-right",
+				transition: "fade",
 				duration: 300,
 				timingFunction: "linear",
 			}}

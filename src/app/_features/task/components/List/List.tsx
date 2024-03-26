@@ -7,6 +7,7 @@ import {
 	Droppable,
 } from "@hello-pangea/dnd";
 import type { Status } from "@prisma/client";
+import cn from "clsx";
 
 import { Avatar, Box, Flex, Text, Title, Tooltip } from "@mantine/core";
 import cx from "clsx";
@@ -27,6 +28,7 @@ import classes from "./index.module.css";
 type Props = {
 	taskList: TaskListType;
 	statusList: Status[];
+	hasScroll?: boolean;
 };
 
 /**
@@ -65,7 +67,11 @@ const reorder = (list: TaskListType, startIndex: number, endIndex: number) => {
 	return result;
 };
 
-export const TaskList: FC<Props> = ({ taskList, statusList }) => {
+export const TaskList: FC<Props> = ({
+	taskList,
+	statusList,
+	hasScroll = false,
+}) => {
 	const [state, setState] = useState(
 		statusList.map((s) => taskList.filter((t) => t.statusId === s.id)),
 	);
@@ -125,81 +131,86 @@ export const TaskList: FC<Props> = ({ taskList, statusList }) => {
 	};
 
 	return (
-		<div className={classes.board}>
-			<DragDropContext onDragEnd={handleDragEnd}>
-				{statusList.map((status, idx) => (
-					<Droppable key={status.id} droppableId={`${idx}`}>
-						{(provided, snapshot) => (
-							<div
-								ref={provided.innerRef}
-								className={cx(classes.panel, {
-									[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
-								})}
-								{...provided.droppableProps}
-							>
-								<Title
-									order={2}
-									c={
-										statusGuard(status.title)
-											? STATUS_COLOR_MAP[status.title]
-											: "dark"
-									}
-									className={cx(classes.heading, {
+		<div className={cn(hasScroll && classes["wrapper-scrollable"])}>
+			<div
+				className={cn(classes.board, hasScroll && classes["board-scrollable"])}
+			>
+				<DragDropContext onDragEnd={handleDragEnd}>
+					{statusList.map((status, idx) => (
+						<Droppable key={status.id} droppableId={`${idx}`}>
+							{(provided, snapshot) => (
+								<div
+									ref={provided.innerRef}
+									className={cx(classes.panel, {
 										[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
 									})}
+									{...provided.droppableProps}
 								>
-									{status.title}
-								</Title>
-								<Box className={classes.tasks}>
-									{(state[idx] ?? []).map((card, index) => (
-										<Draggable
-											key={card.id}
-											draggableId={card.id.toString()}
-											index={index}
-										>
-											{(provided, snapshot) => (
-												<div
-													ref={provided.innerRef}
-													{...provided.draggableProps}
-													{...provided.dragHandleProps}
-													className={cx(classes.card, {
-														[classes.cardDragging ?? ""]: snapshot.isDragging,
-													})}
-												>
-													<Flex
-														direction="column"
-														gap="xs"
-														className={classes.dragHandle}
+									<Title
+										order={2}
+										c={
+											statusGuard(status.title)
+												? STATUS_COLOR_MAP[status.title]
+												: "dark"
+										}
+										className={cx(classes.heading, {
+											[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
+										})}
+									>
+										{status.title}
+									</Title>
+									<Box className={classes.tasks}>
+										{(state[idx] ?? []).map((card, index) => (
+											<Draggable
+												key={card.id}
+												draggableId={card.id.toString()}
+												index={index}
+											>
+												{(provided, snapshot) => (
+													<div
+														ref={provided.innerRef}
+														{...provided.draggableProps}
+														{...provided.dragHandleProps}
+														className={cx(classes.card, {
+															[classes.cardDragging ?? ""]: snapshot.isDragging,
+														})}
 													>
-														<Link
-															href={`/task/${card.id}`}
-															className={classes.cardLink}
+														<Flex
+															direction="column"
+															gap="xs"
+															className={classes.dragHandle}
 														>
-															<Title order={4} lineClamp={2}>
-																{card.title}
-															</Title>
-															<Text lineClamp={2} c="dimmed">
-																created: {format(card.createdAt, "yyyy-MM-dd")}
-															</Text>
-														</Link>
-														<Flex align="center" gap="xs">
-															<Tooltip label={card.username}>
-																<Avatar size="sm" src={card.userIconUrl} />
-															</Tooltip>
-															<DeleteButtonAction id={card.id} />
+															<Link
+																href={`/task?id=${card.id}`}
+																className={classes.cardLink}
+															>
+																<Title order={4} lineClamp={2}>
+																	{card.title}
+																</Title>
+																<Text lineClamp={2} c="dimmed">
+																	created:{" "}
+																	{format(card.createdAt, "yyyy-MM-dd")}
+																</Text>
+															</Link>
+															<Flex align="center" gap="xs">
+																<Tooltip label={card.username}>
+																	<Avatar size="sm" src={card.userIconUrl} />
+																</Tooltip>
+																<DeleteButtonAction id={card.id} />
+															</Flex>
 														</Flex>
-													</Flex>
-												</div>
-											)}
-										</Draggable>
-									))}
-								</Box>
-								{provided.placeholder}
-							</div>
-						)}
-					</Droppable>
-				))}
-			</DragDropContext>
+													</div>
+												)}
+											</Draggable>
+										))}
+									</Box>
+									{provided.placeholder}
+								</div>
+							)}
+						</Droppable>
+					))}
+				</DragDropContext>
+			</div>
 		</div>
 	);
 };
