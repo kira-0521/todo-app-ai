@@ -9,7 +9,15 @@ import {
 import type { Status } from "@prisma/client";
 import cn from "clsx";
 
-import { Avatar, Flex, Stack, Text, Title, Tooltip } from "@mantine/core";
+import {
+	Avatar,
+	Flex,
+	Indicator,
+	Stack,
+	Text,
+	Title,
+	Tooltip,
+} from "@mantine/core";
 import cx from "clsx";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -22,6 +30,8 @@ import {
 import { NON_EXISTING_ID } from "~/constants";
 import { toFormDataForUpdateTask } from "~/server/actions";
 import { DeleteButtonAction } from "..";
+
+import { isWithinLastFiveMinutes } from "~/libs/utils";
 import { useUpdateTaskAction } from "../../hooks";
 import classes from "./index.module.css";
 
@@ -167,39 +177,46 @@ export const TaskList: FC<Props> = ({
 												index={index}
 											>
 												{(provided, snapshot) => (
-													<div
-														ref={provided.innerRef}
-														{...provided.draggableProps}
-														{...provided.dragHandleProps}
-														className={cx(classes.card, {
-															[classes.cardDragging ?? ""]: snapshot.isDragging,
-														})}
+													<Indicator
+														color="orange"
+														processing
+														disabled={!isWithinLastFiveMinutes(card.createdAt)}
 													>
-														<Flex
-															direction="column"
-															gap="xs"
-															className={classes.dragHandle}
+														<div
+															ref={provided.innerRef}
+															{...provided.draggableProps}
+															{...provided.dragHandleProps}
+															className={cx(classes.card, {
+																[classes.cardDragging ?? ""]:
+																	snapshot.isDragging,
+															})}
 														>
-															<Link
-																href={`/task?id=${card.id}`}
-																className={classes.cardLink}
+															<Flex
+																direction="column"
+																gap="xs"
+																className={classes.dragHandle}
 															>
-																<Title order={4} lineClamp={2}>
-																	{card.title}
-																</Title>
-																<Text lineClamp={2} c="dimmed">
-																	created:{" "}
-																	{format(card.createdAt, "yyyy-MM-dd")}
-																</Text>
-															</Link>
-															<Flex align="center" gap="xs">
-																<Tooltip label={card.username}>
-																	<Avatar size="sm" src={card.userIconUrl} />
-																</Tooltip>
-																<DeleteButtonAction id={card.id} />
+																<Link
+																	href={`/task?id=${card.id}`}
+																	className={classes.cardLink}
+																>
+																	<Title order={4} lineClamp={2}>
+																		{card.title}
+																	</Title>
+																	<Text lineClamp={2} c="dimmed">
+																		created:{" "}
+																		{format(card.createdAt, "yyyy-MM-dd")}
+																	</Text>
+																</Link>
+																<Flex align="center" gap="xs">
+																	<Tooltip label={card.username}>
+																		<Avatar size="sm" src={card.userIconUrl} />
+																	</Tooltip>
+																	<DeleteButtonAction id={card.id} />
+																</Flex>
 															</Flex>
-														</Flex>
-													</div>
+														</div>
+													</Indicator>
 												)}
 											</Draggable>
 										))}

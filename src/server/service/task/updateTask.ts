@@ -12,11 +12,6 @@ export const updateTask = async (
 	userRepository: UserRepository,
 	args: UpdateTaskSchema,
 ): Promise<TaskDetail> => {
-	console.log(
-		"========================== args ==========================",
-		args,
-	);
-
 	const updatedTask = await repository.update({
 		where: { id: args.id },
 		data: args,
@@ -26,11 +21,6 @@ export const updateTask = async (
 	const user = await userRepository.findById(updatedTask.createdById);
 	if (!status) throw new Error("Status not found");
 	if (!user) throw new Error("User not found");
-
-	console.log(
-		"========================== updatedTask ==========================",
-		updatedTask,
-	);
 
 	return {
 		id: updatedTask.id,
