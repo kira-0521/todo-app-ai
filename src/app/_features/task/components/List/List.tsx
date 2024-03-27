@@ -9,7 +9,7 @@ import {
 import type { Status } from "@prisma/client";
 import cn from "clsx";
 
-import { Avatar, Box, Flex, Text, Title, Tooltip } from "@mantine/core";
+import { Avatar, Flex, Stack, Text, Title, Tooltip } from "@mantine/core";
 import cx from "clsx";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -159,7 +159,7 @@ export const TaskList: FC<Props> = ({
 									>
 										{status.title}
 									</Title>
-									<Box className={classes.tasks}>
+									<Stack gap="xs">
 										{(state[idx] ?? []).map((card, index) => (
 											<Draggable
 												key={card.id}
@@ -203,7 +203,7 @@ export const TaskList: FC<Props> = ({
 												)}
 											</Draggable>
 										))}
-									</Box>
+									</Stack>
 									{provided.placeholder}
 								</div>
 							)}
