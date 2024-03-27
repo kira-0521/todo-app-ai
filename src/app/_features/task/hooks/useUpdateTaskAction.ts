@@ -1,3 +1,5 @@
+"use client";
+
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";

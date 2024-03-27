@@ -1,3 +1,5 @@
+"use client";
+
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
@@ -10,7 +12,7 @@ export const useDeleteTaskAction = () => {
 	});
 
 	useEffect(() => {
-		if (state.message) {
+		if (state?.message) {
 			notifications.show({
 				color: "danger",
 				title: "Failed",

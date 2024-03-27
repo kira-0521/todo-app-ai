@@ -17,6 +17,7 @@ export const Detail: FC<Props> = memo(({ id }) => {
 		{ id },
 		{
 			enabled: !!id,
+			suspense: true,
 		},
 	);
 

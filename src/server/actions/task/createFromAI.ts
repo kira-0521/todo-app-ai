@@ -58,6 +58,8 @@ export const createTaskFromAIAction = async (
 				}),
 			),
 		);
+
+		// revalidatePath("/");
 		return {
 			status: "success",
 			message: "Success to generate task",

@@ -1,13 +1,14 @@
-import { Skeleton } from "@mantine/core";
+import { Container, Divider, Skeleton, Stack } from "@mantine/core";
 
 export const DetailSkeleton = () => {
 	return (
-		<div>
-			<Skeleton height={30} width={200} mb="md" />
-			<Skeleton height={20} width={100} mb="md" />
-			<Skeleton height={8} mt="sm" radius="xl" />
-			<Skeleton height={8} mt="sm" radius="xl" />
-			<Skeleton height={8} mt="sm" radius="xl" />
-		</div>
+		<Container>
+			<Stack>
+				<Skeleton h={88} />
+				<Skeleton h={20} w={55} />
+			</Stack>
+			<Divider size="md" my="sm" />
+			<Skeleton h={50} />
+		</Container>
 	);
 };

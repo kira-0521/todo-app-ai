@@ -11,20 +11,21 @@ type Props = {
 	children: ReactNode;
 	form: ComponentPropsWithoutRef<"form">;
 	isLoadingOverlay?: boolean;
+	isAi?: boolean;
 };
 
-const SubmitButton = () => {
+const SubmitButton = ({ isAi = false }: { isAi?: boolean }) => {
 	const { pending } = useFormStatus();
 
 	useEffect(() => {
-		if (pending) {
+		if (pending && isAi) {
 			notifications.show({
 				message: "AI is creating tasks...",
 				loading: pending,
 				color: "secondary",
 			});
 		}
-	}, [pending]);
+	}, [pending, isAi]);
 
 	return (
 		<Button type="submit" disabled={pending} loading={pending}>
@@ -33,17 +34,19 @@ const SubmitButton = () => {
 	);
 };
 
-export const Form: FC<Props> = memo(({ children, form, isLoadingOverlay }) => {
-	return (
-		<form {...form}>
-			<Stack pos="relative">
-				<LoadingOverlay
-					visible={isLoadingOverlay ?? false}
-					loaderProps={{ children: <Loader /> }}
-				/>
-				{children}
-				<SubmitButton />
-			</Stack>
-		</form>
-	);
-});
+export const Form: FC<Props> = memo(
+	({ children, form, isLoadingOverlay = false, isAi = false }) => {
+		return (
+			<form {...form}>
+				<Stack pos="relative">
+					<LoadingOverlay
+						visible={isLoadingOverlay ?? false}
+						loaderProps={{ children: <Loader /> }}
+					/>
+					{children}
+					<SubmitButton isAi={isAi} />
+				</Stack>
+			</form>
+		);
+	},
+);

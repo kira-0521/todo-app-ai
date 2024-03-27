@@ -1,9 +1,19 @@
+.wrapper-scrollable {
+  width: 100vw;
+  overflow-x: auto;
+}
+
 .board {
   display: grid;
   gap: var(--mantine-spacing-md);
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   height: 90vh;
   max-height: 90vh;
+}
+
+.board-scrollable {
+  width: 150vw;
+  grid-template-columns: repeat(auto-fit, 280px);
 }
 
 .panel {
@@ -35,11 +45,9 @@
   display: flex;
   align-items: center;
   border-radius: var(--mantine-radius-md);
-  border: rem(1px) solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
   padding: var(--mantine-spacing-sm) var(--mantine-spacing-xl);
   padding-left: calc(var(--mantine-spacing-xl) - var(--mantine-spacing-md));
   background-color: var(--mantine-color-dark-5);
-  margin-bottom: var(--mantine-spacing-sm);
   cursor: grab;
 
   &:hover {

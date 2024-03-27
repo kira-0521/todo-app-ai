@@ -2,21 +2,22 @@ import { Container } from "@mantine/core";
 import { Suspense } from "react";
 import { DashBoardSkelton } from "~/app/_components/skelton";
 import { DetailDrawer } from "~/app/_features";
-import { Dashboard } from "../_components";
+import { Dashboard } from "./_components";
 
 export default function TaskDetailPage({
-	params,
+	searchParams: { id = undefined },
 }: {
-	params: {
-		id: string;
+	searchParams: {
+		id?: string;
 	};
 }) {
+	const taskId = id ?? "";
 	return (
 		<Container>
 			<Suspense fallback={<DashBoardSkelton />}>
-				<Dashboard isOpenModal={false} />
+				<Dashboard taskId={taskId} />
 			</Suspense>
-			<DetailDrawer id={params.id} />
+			<DetailDrawer id={taskId} />
 		</Container>
 	);
 }
