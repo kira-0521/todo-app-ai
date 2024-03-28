@@ -1,7 +1,8 @@
+import { Stack } from "@mantine/core";
 import { unstable_noStore as noStore } from "next/cache";
 import type { FC } from "react";
+import { RecentTasks, TaskList } from "~/app/_features";
 import { api } from "~/trpc/server";
-import { TaskList } from "../../_features";
 
 type Props = {
 	taskId?: string;
@@ -14,6 +15,9 @@ export const Dashboard: FC<Props> = async ({ taskId = "" }) => {
 	const statuses = await api.status.getAll.query();
 
 	return (
-		<TaskList taskList={tasks} statusList={statuses} hasScroll={!!taskId} />
+		<Stack>
+			<RecentTasks taskList={tasks} />
+			<TaskList taskList={tasks} statusList={statuses} hasScroll={!!taskId} />
+		</Stack>
 	);
 };

@@ -1,0 +1,28 @@
+.heading {
+  color: var(--mantine-color-dark-2);
+}
+
+.description {
+  color: var(--mantine-color-dark-3)
+}
+
+.cards {
+  overflow-y: auto;
+  max-height: 250px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-xl);
+  padding-left: calc(var(--mantine-spacing-xl) - var(--mantine-spacing-md));
+  background-color: var(--mantine-color-dark-5);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--mantine-color-dark-1);
+
+  &:hover {
+    background-color: var(--mantine-color-dark-4);
+  }
+}

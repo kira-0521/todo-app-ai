@@ -10,3 +10,4 @@ export * from "./StatusSelect";
 export * from "./DetailDrawer";
 export * from "./Detail";
 export * from "./DeleteButtonAction";
+export * from "./RecentTasks";

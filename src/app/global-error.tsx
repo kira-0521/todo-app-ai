@@ -1,8 +1,10 @@
+"use client";
+
 import { Button, Container, Group, Text, Title } from "@mantine/core";
 import Link from "next/link";
 import classes from "./_css/server-error.module.css";
 
-export function ServerError() {
+export default function GlobalError() {
 	return (
 		<div className={classes.root}>
 			<Container>
