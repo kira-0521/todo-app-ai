@@ -8,6 +8,7 @@ import {
 } from "@hello-pangea/dnd";
 import type { Status } from "@prisma/client";
 import cn from "clsx";
+import { SessionProvider, useSession } from "next-auth/react";
 
 import {
 	Avatar,
@@ -21,7 +22,13 @@ import {
 import cx from "clsx";
 import { format } from "date-fns";
 import Link from "next/link";
-import { type FC, useState, useTransition } from "react";
+import {
+	type FC,
+	useEffect,
+	useOptimistic,
+	useState,
+	useTransition,
+} from "react";
 import type { TaskList as TaskListType } from "~/@types/task";
 import {
 	STATUS_COLOR_MAP,
@@ -77,14 +84,61 @@ const reorder = (list: TaskListType, startIndex: number, endIndex: number) => {
 	return result;
 };
 
+type CardProps = {
+	task: TaskListType[number];
+	optimisticDeleteAction: (id: string) => void;
+};
+const Card: FC<CardProps> = ({ task, optimisticDeleteAction }) => {
+	const { data: session } = useSession();
+
+	return (
+		<Flex direction="column" gap="xs" className={classes.dragHandle}>
+			<Link href={`/task?id=${task.id}`} className={classes.cardLink}>
+				<Title order={4} lineClamp={2}>
+					{task.title}
+				</Title>
+				<Text lineClamp={2} c="dimmed">
+					created: {format(task.createdAt, "yyyy-MM-dd")}
+				</Text>
+			</Link>
+			<Flex align="center" gap="xs">
+				<Tooltip label={task.username}>
+					<Avatar size="sm" src={task.userIconUrl} />
+				</Tooltip>
+				{task.createdBy === session?.user.id && (
+					<DeleteButtonAction
+						id={task.id.toString()}
+						callback={optimisticDeleteAction}
+					/>
+				)}
+			</Flex>
+		</Flex>
+	);
+};
+
 export const TaskList: FC<Props> = ({
 	taskList,
 	statusList,
 	hasScroll = false,
 }) => {
+	const [optimisticTaskList, optimisticFilteringTasks] = useOptimistic(
+		taskList,
+		(state, id: string) => state.filter((s) => s.id.toString() !== id),
+	);
 	const [state, setState] = useState(
 		statusList.map((s) => taskList.filter((t) => t.statusId === s.id)),
 	);
+
+	// HACK: lengthの変更検知によるMaximum update回避
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		setState(
+			statusList.map((s) =>
+				optimisticTaskList.filter((t) => t.statusId === s.id),
+			),
+		);
+	}, [optimisticTaskList.length, statusList.length]);
+
 	const { formAction: updateAction } = useUpdateTaskAction();
 	const [, startTransition] = useTransition();
 
@@ -136,98 +190,87 @@ export const TaskList: FC<Props> = ({
 			if (!srcLiResult || !destLiResult) return;
 			newState[sIdx] = srcLiResult;
 			newState[dIdx] = destLiResult;
-			setState(newState.filter((group) => group.length));
+			setState(newState);
 		}
 	};
 
 	return (
-		<div className={cn(hasScroll && classes["wrapper-scrollable"])}>
-			<div
-				className={cn(classes.board, hasScroll && classes["board-scrollable"])}
-			>
-				<DragDropContext onDragEnd={handleDragEnd}>
-					{statusList.map((status, idx) => (
-						<Droppable key={status.id} droppableId={`${idx}`}>
-							{(provided, snapshot) => (
-								<div
-									ref={provided.innerRef}
-									className={cx(classes.panel, {
-										[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
-									})}
-									{...provided.droppableProps}
-								>
-									<Title
-										order={2}
-										c={
-											statusGuard(status.title)
-												? STATUS_COLOR_MAP[status.title]
-												: "dark"
-										}
-										className={cx(classes.heading, {
+		<SessionProvider>
+			<div className={cn(hasScroll && classes["wrapper-scrollable"])}>
+				<div
+					className={cn(
+						classes.board,
+						hasScroll && classes["board-scrollable"],
+					)}
+				>
+					<DragDropContext onDragEnd={handleDragEnd}>
+						{statusList.map((status, idx) => (
+							<Droppable key={status.id} droppableId={`${idx}`}>
+								{(provided, snapshot) => (
+									<div
+										ref={provided.innerRef}
+										className={cx(classes.panel, {
 											[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
 										})}
+										{...provided.droppableProps}
 									>
-										{status.title}
-									</Title>
-									<Stack gap="xs">
-										{(state[idx] ?? []).map((card, index) => (
-											<Draggable
-												key={card.id}
-												draggableId={card.id.toString()}
-												index={index}
-											>
-												{(provided, snapshot) => (
-													<Indicator
-														color="orange"
-														processing
-														disabled={!isWithinLastFiveMinutes(card.createdAt)}
-													>
-														<div
-															ref={provided.innerRef}
-															{...provided.draggableProps}
-															{...provided.dragHandleProps}
-															className={cx(classes.card, {
-																[classes.cardDragging ?? ""]:
-																	snapshot.isDragging,
-															})}
+										<Title
+											order={2}
+											c={
+												statusGuard(status.title)
+													? STATUS_COLOR_MAP[status.title]
+													: "dark"
+											}
+											className={cx(classes.heading, {
+												[classes.panelDragOver ?? ""]: snapshot.isDraggingOver,
+											})}
+										>
+											{status.title}
+										</Title>
+										<Stack gap="xs">
+											{(state[idx] ?? []).map((card, index) => (
+												<Draggable
+													key={card.id}
+													draggableId={card.id.toString()}
+													index={index}
+												>
+													{(provided, snapshot) => (
+														<Indicator
+															color="orange"
+															processing
+															disabled={
+																!isWithinLastFiveMinutes(card.createdAt)
+															}
 														>
-															<Flex
-																direction="column"
-																gap="xs"
-																className={classes.dragHandle}
+															<div
+																ref={provided.innerRef}
+																{...provided.draggableProps}
+																{...provided.dragHandleProps}
+																className={cx(classes.card, {
+																	[classes.cardDragging ?? ""]:
+																		snapshot.isDragging,
+																})}
 															>
-																<Link
-																	href={`/task?id=${card.id}`}
-																	className={classes.cardLink}
-																>
-																	<Title order={4} lineClamp={2}>
-																		{card.title}
-																	</Title>
-																	<Text lineClamp={2} c="dimmed">
-																		created:{" "}
-																		{format(card.createdAt, "yyyy-MM-dd")}
-																	</Text>
-																</Link>
-																<Flex align="center" gap="xs">
-																	<Tooltip label={card.username}>
-																		<Avatar size="sm" src={card.userIconUrl} />
-																	</Tooltip>
-																	<DeleteButtonAction id={card.id} />
-																</Flex>
-															</Flex>
-														</div>
-													</Indicator>
-												)}
-											</Draggable>
-										))}
-									</Stack>
-									{provided.placeholder}
-								</div>
-							)}
-						</Droppable>
-					))}
-				</DragDropContext>
+																<Card
+																	task={card}
+																	optimisticDeleteAction={
+																		optimisticFilteringTasks
+																	}
+																/>
+															</div>
+														</Indicator>
+													)}
+												</Draggable>
+											))}
+										</Stack>
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						))}
+					</DragDropContext>
+				</div>
 			</div>
-		</div>
+		</SessionProvider>
 	);
 };
