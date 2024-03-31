@@ -11,8 +11,8 @@ import { deleteTaskSchema } from ".";
 const taskRepository = createTaskRepository();
 
 type DeleteTaskActionState = {
-	status: "success" | "error";
-	message: string;
+	status?: "success" | "error";
+	message?: string;
 };
 
 export const deleteTaskAction = async (
@@ -36,10 +36,4 @@ export const deleteTaskAction = async (
 	}
 	revalidatePath("/");
 	redirect("/");
-
-	return {
-		...state,
-		status: "success" as const,
-		message: "",
-	};
 };

@@ -1,25 +1,41 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useTransition } from "react";
 import classes from "./index.module.css";
 
-import { UnstyledButton } from "@mantine/core";
+import { ActionIcon } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import type { FC } from "react";
+import { toFormDataForDeleteTask } from "~/server/actions";
 import { useDeleteTaskAction } from "../../hooks";
 
+type Id = string;
 type Props = {
-	id: string | number;
+	id: Id;
+	callback?: (id: Id) => void;
 };
 
-export const DeleteButtonAction: FC<Props> = memo(({ id }) => {
-	const { dispatchDeleteTaskAction } = useDeleteTaskAction();
-	return (
-		<form action={dispatchDeleteTaskAction} className={classes.deleteButton}>
-			<input type="hidden" name="id" value={id} />
-			<UnstyledButton type="submit" className={classes.deleteButton}>
+export const DeleteButtonAction: FC<Props> = memo(
+	({ id, callback = () => {} }) => {
+		const { dispatchDeleteTaskAction } = useDeleteTaskAction();
+		const [, startTransition] = useTransition();
+
+		return (
+			<ActionIcon
+				variant="subtle"
+				color="gray"
+				className={classes.deleteButton}
+				onClick={() => {
+					startTransition(() => {
+						callback?.(id);
+						dispatchDeleteTaskAction(
+							toFormDataForDeleteTask({ id: Number.parseInt(id, 10) }),
+						);
+					});
+				}}
+			>
 				<IconTrash className={classes.icon} />
-			</UnstyledButton>
-		</form>
-	);
-});
+			</ActionIcon>
+		);
+	},
+);

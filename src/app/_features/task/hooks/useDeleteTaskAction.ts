@@ -7,7 +7,7 @@ import { deleteTaskAction } from "~/server/actions";
 
 export const useDeleteTaskAction = () => {
 	const [state, dispatchAction] = useFormState(deleteTaskAction, {
-		status: "success" as const,
+		status: "error" as const,
 		message: "",
 	});
 

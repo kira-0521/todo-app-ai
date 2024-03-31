@@ -24,7 +24,7 @@ export const getTaskList = async (
 			content: task.content ?? "",
 			status: status?.title ?? "",
 			statusId: status?.id ?? 0,
-			createdBy: user?.name ?? "",
+			createdBy: user?.id ?? "",
 			username: user?.name ?? "",
 			userIconUrl: user?.image ?? "",
 			createdAt: task.createdAt.toISOString(),
