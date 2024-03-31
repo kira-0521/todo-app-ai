@@ -38,13 +38,13 @@ export const createTaskFromAIAction = async (
 	}
 
 	const { thumbnail } = validatedData.data;
+	const mimeType = thumbnail.type;
 	const base64String = await fileToBase64(thumbnail);
 
 	try {
 		const generatedTasks = await generateTasks({
 			image: {
-				// TODO: mimetype取得
-				mimeType: "image/png",
+				mimeType,
 				data: base64String,
 			},
 		});
