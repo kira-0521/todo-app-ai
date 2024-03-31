@@ -190,7 +190,7 @@ export const TaskList: FC<Props> = ({
 			if (!srcLiResult || !destLiResult) return;
 			newState[sIdx] = srcLiResult;
 			newState[dIdx] = destLiResult;
-			setState(newState.filter((group) => group.length));
+			setState(newState);
 		}
 	};
 
