@@ -1,18 +1,4 @@
 help:
-	@echo '--- コンテナ関連 ---'
-	@echo 'ps                   -- コンテナ一覧を表示します'
-	@echo 'up                   -- コンテナを起動します'
-	@echo 'down                 -- コンテナを停止します'
-	@echo 'build                -- コンテナをビルドします'
-	@echo 'rebuild              -- コンテナを再ビルドします'
-	@echo 'start                -- コンテナを開始します'
-	@echo 'stop                 -- コンテナを停止します'
-	@echo 'restart              -- コンテナを再起動します'
-	@echo 'status               -- コンテナの状態を表示します'
-	@echo 'logs                 -- コンテナのログを表示します'
-	@echo 'exec                 -- コンテナに入ります'
-	@echo ''
-
 	@echo '--- DB関連 ---'
 	@echo 'db                   -- DBに接続します'
 	@echo 'db-push              -- DBにPrismaの変更を反映させます'
@@ -24,7 +10,9 @@ help:
 	@echo 'db-fresh             -- Prismaのデータをリセットします'
 
 	@echo '--- 開発環境関連 ---'
+	@echo 'install              -- パッケージをインストールします。'
 	@echo 'dev                  -- ローカルサーバーを起動します'
+	@echo 'init 							  -- 初期設定を実施します'
 	@echo 'check                -- formatとlintを実施します'
 	@echo 'type-check           -- 型チェックを実施します'
 	@echo 'e-ls                 -- vercelのenv一覧を表示します'
@@ -34,30 +22,12 @@ help:
 	@echo 'storybook            -- storybookを起動します'
 	@echo 'scaffold              -- ファイルを生成します'
 
-ps:
-	docker-compose ps
-up:
-	docker-compose up -d
-down:
-	docker-compose down
-build:
-	docker-compose build
-rebuild:
-	docker-compose up -d --build
-start:
-	docker-compose start
-stop:
-	docker-compose stop
-restart:
-	docker-compose restart
-status:
-	docker-compose ps
-logs:
-	docker-compose logs -f
-exec:
-	docker-compose exec postgres sh
+# 環境構築
+init:
+	@make install
+	@make dev
 
-# データベース関連のコマンド
+# DB関連のコマンド
 db:
 	docker compose exec postgres sh
 db-push:
