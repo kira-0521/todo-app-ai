@@ -46,6 +46,8 @@ db-fresh:
 	bunx prisma migrate reset
 
 # 開発ツール関連のコマンド
+install:
+	bun install
 dev:
 	bun dev
 check:
